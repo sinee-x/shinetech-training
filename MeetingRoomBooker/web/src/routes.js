@@ -1,16 +1,21 @@
 import React from "react";
-import Home from "./pages/Home";
+import Index from "./pages/Index";
 import Booking from "./pages/Booking";
 import RoomList from "./pages/RoomList";
 import BookingList from "./pages/BookingList";
 import Account from "./pages/Account";
+import Home from "./pages/Home";
 
 
 const routes = [
     {
         path: "/",
-        element: <Home />,
+        element: <Index />,
         children: [
+            {
+                path: "/Home",
+                element: <Home />,
+            },
             {
                 path: "/account",
                 element: <Account />,

@@ -6,7 +6,7 @@ function Layout() {
     return (
         <>
             <NavBar />
-            <Box ml={21} mr={21} mt={2}>
+            <Box ml={32} mt={10}>
                 <Outlet />
             </Box>
         </>
