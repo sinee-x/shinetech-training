@@ -7,8 +7,8 @@ namespace MeetingRoomBooker.Application.Interfaces
     {
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
         Task<UserDto?> GetUserByIdAsync(int userId);
-        Task<UserDto> CreateUserAsync(CreateUserRequestDto user);
-        Task<UserDto> UpdateUserAsync(int id, UpdateUserRequestDto user);
+        Task<UserDto> CreateUserAsync(int id, CreateUserRequestDto request);
+        Task<UserDto> UpdateUserAsync(int id, UpdateUserRequestDto request);
         Task DeleteUserAsync(int userId);
     }
 }

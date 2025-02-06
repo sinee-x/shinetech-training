@@ -7,6 +7,5 @@
         DateTime? LastModifiedAt { get; set; }
         int CreatedBy { get; set; }
         int? LastModifiedBy { get; set; }
-        bool IsDeleted { get; set; }
     }
 }

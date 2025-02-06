@@ -1,34 +1,90 @@
 ﻿using MeetingRoomBooker.Application.DTOs;
 using MeetingRoomBooker.Application.DTOs.Requests;
 using MeetingRoomBooker.Application.Interfaces;
+using MeetingRoomBooker.Domain.Entities;
+using MeetingRoomBooker.Domain.Repositories;
 
 namespace MeetingRoomBooker.Application.Services
 {
-    public class UserService : IUserService
+    public class UserService(IUserRepository userRepository) : IUserService
     {
-        public Task<UserDto> CreateUserAsync(CreateUserRequestDto user)
+        public async Task<UserDto> CreateUserAsync(int id, CreateUserRequestDto request)
         {
-            throw new NotImplementedException();
+            var existingUser = await userRepository.GetUserByUsernameAsync(request.Username);
+            if (existingUser != null)
+            {
+                throw new Exception("Username already exists");
+            }
+
+            var user = new User
+            {
+                Username = request.Username,
+                Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Role = request.Role,
+            };
+
+            user.SetCreated(request.CreatedBy);
+
+            await userRepository.CreateUserAsync(user);
+
+            return MapToDto(user);
         }
+
 
         public Task DeleteUserAsync(int userId)
         {
-            throw new NotImplementedException();
+            return userRepository.DeleteUserAsync(userId);
         }
 
-        public Task<IEnumerable<UserDto>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
-            throw new NotImplementedException();
+            var users = await userRepository.GetAllUsersAsync();
+            return users.Any() ? users.Select(MapToDto) : [];
         }
 
-        public Task<UserDto?> GetUserByIdAsync(int userId)
+        public async Task<UserDto?> GetUserByIdAsync(int userId)
         {
-            throw new NotImplementedException();
+            var user = await userRepository.GetUserByIdAsync(userId);
+            return user != null ? MapToDto(user) : null;
         }
 
-        public Task<UserDto> UpdateUserAsync(int id, UpdateUserRequestDto user)
+        public async Task<UserDto> UpdateUserAsync(int id, UpdateUserRequestDto request)
         {
-            throw new NotImplementedException();
+            var user = await userRepository.GetUserByIdAsync(id) ?? throw new Exception($"User with ID {id} not found");
+
+            if (!string.IsNullOrEmpty(request.Username))
+            {
+                user.Username = request.Username;
+            }
+
+            if (!string.IsNullOrEmpty(request.Password))
+            {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            }
+
+            if (request.Role.HasValue)
+            {
+                user.Role = request.Role.Value;
+            }
+
+            user.SetModified(request.LastModifiedBy);
+
+            await userRepository.UpdateUserAsync(user);
+
+            return MapToDto(user);
+        }
+
+        private static UserDto MapToDto(User user)
+        {
+            return new UserDto
+            {
+                UserId = user.Id,
+                Username = user.Username,
+                Password = user.Password,
+                Role = user.Role,
+                CreatedAt = user.CreatedAt,
+                LastModifiedAt = user.LastModifiedAt,
+            };
         }
     }
 }

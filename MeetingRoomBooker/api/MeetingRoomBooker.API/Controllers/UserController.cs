@@ -27,9 +27,11 @@ namespace MeetingRoomBooker.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateUserRequestDto user)
+        public async Task<IActionResult> Post([FromBody] CreateUserRequestDto request)
         {
-            var createdUser = await userService.CreateUserAsync(user);
+            var userId = int.Parse(User.Claims.First(x => x.Type == "id").Value);
+
+            var createdUser = await userService.CreateUserAsync(userId, request);
             return CreatedAtAction(nameof(Get), new { id = createdUser.UserId }, createdUser);
         }
 

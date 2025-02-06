@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MeetingRoomBooker.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace MeetingRoomBooker.Application.DTOs.Requests
 {
@@ -11,6 +12,8 @@ namespace MeetingRoomBooker.Application.DTOs.Requests
         [Required(ErrorMessage = "Password is required")]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be between 6 and 100 characters")]
         public string Password { get; set; } = "123456";
+
+        public UserRole? Role { get; set; }
 
         public int? LastModifiedBy { get; set; }
     }
