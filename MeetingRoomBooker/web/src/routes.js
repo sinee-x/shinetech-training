@@ -1,39 +1,38 @@
 import React from "react";
-import Index from "./pages/Index";
+import Layout from "./components/Layout";
 import Booking from "./pages/Booking";
 import RoomList from "./pages/RoomList";
 import BookingList from "./pages/BookingList";
 import Account from "./pages/Account";
 import Home from "./pages/Home";
 
-
 const routes = [
     {
         path: "/",
-        element: <Index />,
+        element: <Layout />,
         children: [
             {
-                path: "/Home",
+                index: true,
                 element: <Home />,
             },
             {
-                path: "/account",
+                path: "account",
                 element: <Account />,
             },
             {
-                path: "/booking",
+                path: "booking",
                 element: <Booking />,
             },
             {
-                path: "/room-list",
+                path: "room-list",
                 element: <RoomList />,
             },
             {
-                path: "/booking-list",
+                path: "booking-list",
                 element: <BookingList />,
             }
         ]
     },
-]
+];
 
 export default routes;

@@ -1,15 +1,19 @@
+import React, { useState } from "react";
 import { Box } from "@mui/material";
-import NavBar from "./NavBar";
 import { Outlet } from "react-router-dom";
+import NavBar from "./NavBar";
 
 function Layout() {
+    const [drawerOpen, setDrawerOpen] = useState(false);
+
     return (
         <>
-            <NavBar />
-            <Box ml={32} mt={10}>
+            <NavBar setDrawerOpen={setDrawerOpen} />
+            <Box ml={drawerOpen ? 32 : 11} mt={10}>
                 <Outlet />
             </Box>
         </>
-    )
+    );
 }
+
 export default Layout;
