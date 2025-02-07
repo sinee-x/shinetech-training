@@ -32,13 +32,14 @@ namespace MeetingRoomBooker.API.Controllers
             var userId = int.Parse(User.Claims.First(x => x.Type == "id").Value);
 
             var createdUser = await userService.CreateUserAsync(userId, request);
-            return CreatedAtAction(nameof(Get), new { id = createdUser.UserId }, createdUser);
+            return CreatedAtAction(nameof(Get), new { id = createdUser.Id }, createdUser);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UpdateUserRequestDto user)
         {
-            var updatedUser = await userService.UpdateUserAsync(id, user);
+            var userId = int.Parse(User.Claims.First(x => x.Type == "id").Value);
+            var updatedUser = await userService.UpdateUserAsync(id, user, userId);
             if (updatedUser == null)
             {
                 return NotFound();

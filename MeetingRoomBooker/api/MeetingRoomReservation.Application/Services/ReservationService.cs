@@ -8,7 +8,7 @@ namespace MeetingRoomBooker.Application.Services
 {
     public class ReservationService(IReservationRepository reservationRepository) : IReservationService
     {
-        public async Task<ReservationDto> CreateReservationAsync(int id, CreateReservationRequestDto request)
+        public async Task<ReservationDto> CreateReservationAsync(int userId, CreateReservationRequestDto request)
         {
             var room = await reservationRepository.GetReservationsByMeetingRoomIdAsync(request.RoomId);
 
@@ -27,7 +27,7 @@ namespace MeetingRoomBooker.Application.Services
                 CreatedAt = DateTime.Now,
                 LastModifiedAt = DateTime.Now
             };
-            reservation.SetCreated(request.CreatedBy);
+            reservation.SetCreated(userId);
 
             await reservationRepository.CreateReservationAsync(reservation);
 
@@ -43,21 +43,6 @@ namespace MeetingRoomBooker.Application.Services
         {
             var reservations = await reservationRepository.GetAllReservationsAsync();
             return reservations.Select(MapToDto);
-        }
-
-        private ReservationDto MapToDto(Reservation reservation)
-        {
-            return new ReservationDto
-            {
-                UserId = reservation.UserId,
-                RoomId = reservation.RoomId,
-                StartTime = reservation.StartTime,
-                EndTime = reservation.EndTime,
-                Status = reservation.Status,
-                CreatedAt = reservation.CreatedAt,
-                LastModifiedAt = reservation.LastModifiedAt
-            };
-
         }
 
         public async Task<ReservationDto?> GetReservationByIdAsync(int id)
@@ -78,7 +63,7 @@ namespace MeetingRoomBooker.Application.Services
             return reservations.Select(MapToDto);
         }
 
-        public async Task<ReservationDto> UpdateReservationAsync(int id, UpdateReservationRequestDto request)
+        public async Task<ReservationDto> UpdateReservationAsync(int id, UpdateReservationRequestDto request, int userId)
         {
             var room = await reservationRepository.GetReservationsByMeetingRoomIdAsync(request.RoomId);
 
@@ -94,10 +79,27 @@ namespace MeetingRoomBooker.Application.Services
             reservation.StartTime = request.StartTime;
             reservation.EndTime = request.EndTime;
 
-            reservation.SetModified(request.LastModifiedBy);
+            reservation.SetModified(userId);
 
             await reservationRepository.UpdateReservationAsync(reservation);
             return MapToDto(reservation);
         }
+
+        private ReservationDto MapToDto(Reservation reservation)
+        {
+            return new ReservationDto
+            {
+                Id = reservation.Id,
+                UserId = reservation.UserId,
+                RoomId = reservation.RoomId,
+                StartTime = reservation.StartTime,
+                EndTime = reservation.EndTime,
+                Status = reservation.Status,
+                CreatedAt = reservation.CreatedAt,
+                LastModifiedAt = reservation.LastModifiedAt
+            };
+
+        }
+
     }
 }

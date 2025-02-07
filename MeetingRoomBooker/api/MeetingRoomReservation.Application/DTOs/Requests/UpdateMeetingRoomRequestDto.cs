@@ -11,6 +11,5 @@ namespace MeetingRoomBooker.Application.DTOs.Requests
         public string RoomType { get; set; } = string.Empty;
         public string AvailableTime { get; set; } = string.Empty;
         public string Notes { get; set; } = string.Empty;
-        public int? LastModifiedBy { get; set; }
     }
 }

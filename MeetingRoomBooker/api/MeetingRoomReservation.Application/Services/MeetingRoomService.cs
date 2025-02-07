@@ -8,7 +8,7 @@ namespace MeetingRoomBooker.Application.Services
 {
     public class MeetingRoomService(IMeetingRoomRepository meetingRoomRepository) : IMeetingRoomService
     {
-        public async Task<MeetingRoomDto> CreateMeetingRoomAsync(int id, CreateMeetingRoomRequestDto request)
+        public async Task<MeetingRoomDto> CreateMeetingRoomAsync(int userId, CreateMeetingRoomRequestDto request)
         {
             var existingUser = await meetingRoomRepository.GetMeetingRoomsByRoomNameAsync(request.RoomName);
             if (existingUser != null)
@@ -25,7 +25,7 @@ namespace MeetingRoomBooker.Application.Services
                 AvailableTime = request.AvailableTime,
                 Notes = request.Notes
             };
-            meetingRoom.SetCreated(request.CreatedBy);
+            meetingRoom.SetCreated(userId);
 
             await meetingRoomRepository.CreateMeetingRoomAsync(meetingRoom);
 
@@ -49,7 +49,7 @@ namespace MeetingRoomBooker.Application.Services
             return meetingRoom != null ? MapToDto(meetingRoom) : null;
         }
 
-        public async Task<MeetingRoomDto> UpdateMeetingRoomAsync(int id, UpdateMeetingRoomRequestDto request)
+        public async Task<MeetingRoomDto> UpdateMeetingRoomAsync(int id, UpdateMeetingRoomRequestDto request, int userId)
         {
             var meetingRoom = await meetingRoomRepository.GetMeetingRoomByIdAsync(id) ?? throw new Exception($"Meeting room with ID {id} not found");
 
@@ -78,7 +78,7 @@ namespace MeetingRoomBooker.Application.Services
                 meetingRoom.Notes = request.Notes;
             }
 
-            meetingRoom.SetModified(request.LastModifiedBy);
+            meetingRoom.SetModified(userId);
 
             await meetingRoomRepository.UpdateMeetingRoomAsync(id, meetingRoom);
 
@@ -89,6 +89,7 @@ namespace MeetingRoomBooker.Application.Services
         {
             return new MeetingRoomDto
             {
+                Id = meetingRoom.Id,
                 RoomName = meetingRoom.RoomName,
                 Capacity = meetingRoom.Capacity,
                 Status = meetingRoom.Status,

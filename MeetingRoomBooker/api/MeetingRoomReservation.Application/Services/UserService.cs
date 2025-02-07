@@ -8,7 +8,7 @@ namespace MeetingRoomBooker.Application.Services
 {
     public class UserService(IUserRepository userRepository) : IUserService
     {
-        public async Task<UserDto> CreateUserAsync(int id, CreateUserRequestDto request)
+        public async Task<UserDto> CreateUserAsync(int userId, CreateUserRequestDto request)
         {
             var existingUser = await userRepository.GetUserByUsernameAsync(request.Username);
             if (existingUser != null)
@@ -23,7 +23,7 @@ namespace MeetingRoomBooker.Application.Services
                 Role = request.Role,
             };
 
-            user.SetCreated(request.CreatedBy);
+            user.SetCreated(userId);
 
             await userRepository.CreateUserAsync(user);
 
@@ -42,13 +42,13 @@ namespace MeetingRoomBooker.Application.Services
             return users.Any() ? users.Select(MapToDto) : [];
         }
 
-        public async Task<UserDto?> GetUserByIdAsync(int userId)
+        public async Task<UserDto?> GetUserByIdAsync(int id)
         {
-            var user = await userRepository.GetUserByIdAsync(userId);
+            var user = await userRepository.GetUserByIdAsync(id);
             return user != null ? MapToDto(user) : null;
         }
 
-        public async Task<UserDto> UpdateUserAsync(int id, UpdateUserRequestDto request)
+        public async Task<UserDto> UpdateUserAsync(int id, UpdateUserRequestDto request, int userId)
         {
             var user = await userRepository.GetUserByIdAsync(id) ?? throw new Exception($"User with ID {id} not found");
 
@@ -67,7 +67,7 @@ namespace MeetingRoomBooker.Application.Services
                 user.Role = request.Role.Value;
             }
 
-            user.SetModified(request.LastModifiedBy);
+            user.SetModified(userId);
 
             await userRepository.UpdateUserAsync(user);
 
@@ -78,7 +78,7 @@ namespace MeetingRoomBooker.Application.Services
         {
             return new UserDto
             {
-                UserId = user.Id,
+                Id = user.Id,
                 Username = user.Username,
                 Password = user.Password,
                 Role = user.Role,

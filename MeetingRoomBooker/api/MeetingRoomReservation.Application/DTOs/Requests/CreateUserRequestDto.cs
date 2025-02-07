@@ -14,7 +14,5 @@ namespace MeetingRoomBooker.Application.DTOs.Requests
         public string Password { get; set; } = "123456";
 
         public UserRole Role { get; set; } = UserRole.User;
-
-        public int CreatedBy { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
@@ -22,6 +23,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -104,45 +106,21 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 const NavBar = ({ setDrawerOpen }) => {
-    const userOptions = [
-        {
-            label: "Home",
-            path: "/",
-            icon: <HomeIcon />
-        },
-        {
-            label: "Account",
-            path: "/account",
-            icon: <AccountIcon />
-        },
-        {
-            label: "Bookings",
-            path: "/booking-list",
-            icon: <BallotIcon />
-        },
-        {
-            label: "RoomBooking",
-            path: "/booking",
-            icon: <AddHomeIcon />
-        },
-        {
-            label: "Rooms",
-            path: "/room-list",
-            icon: <MeetingRoomIcon />
-        }
 
+    const location = useLocation();
+
+    const userOptions = [
+        { label: "Home", path: "/", icon: <HomeIcon /> },
+        { label: "Account", path: "/account", icon: <AccountIcon /> },
+        { label: "Bookings", path: "/booking-list", icon: <BallotIcon /> },
+        { label: "RoomBooking", path: "/booking", icon: <AddHomeIcon /> },
+        { label: "Rooms", path: "/room-list", icon: <MeetingRoomIcon /> }
     ];
 
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
-    const [selected, setSelected] = React.useState(null);
+    const [open, setOpen] = useState(false);
 
-    React.useEffect(() => {
-        if (window.location.pathname.endsWith('/')) {
-            setSelected(0);
-        }
-    }, [selected]);
-
+    const selected = userOptions.findIndex(option => option.path === location.pathname);
     const handleDrawerOpen = () => {
         setOpen(true);
         setDrawerOpen(true);
@@ -172,7 +150,7 @@ const NavBar = ({ setDrawerOpen }) => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component={Link} to="/" onClick={() => setSelected(0)} sx={{ textDecoration: 'none', color: 'white' }}>
+                    <Typography variant="h6" noWrap component={Link} to="/" sx={{ textDecoration: 'none', color: 'white' }}>
                         Room Booking
                     </Typography>
                 </Toolbar>
@@ -193,8 +171,7 @@ const NavBar = ({ setDrawerOpen }) => {
                                 backgroundColor: selected === index ? '#eff6ff' : 'inherit',
                                 color: selected === index ? '#2563eb' : 'inherit',
                                 '&:hover': { backgroundColor: '#f9fafb' }
-                            }}
-                            onClick={() => setSelected(index)}>
+                            }}>
                             <ListItemButton
                                 sx={[
                                     {
