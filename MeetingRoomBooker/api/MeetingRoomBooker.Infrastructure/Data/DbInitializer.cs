@@ -23,14 +23,14 @@ namespace MeetingRoomBooker.Infrastructure.Data
             {
                 new() {
                     Username = "admin",
-                    Password = BCrypt.Net.BCrypt.HashPassword("123456"),
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
                     Role = UserRole.Admin,
                     CreatedBy = 1,
                     CreatedAt = DateTime.UtcNow,
                 },
                 new() {
                     Username = "user",
-                    Password = BCrypt.Net.BCrypt.HashPassword("123456"),
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
                     Role = UserRole.User,
                     CreatedBy = 1,
                     CreatedAt = DateTime.UtcNow,

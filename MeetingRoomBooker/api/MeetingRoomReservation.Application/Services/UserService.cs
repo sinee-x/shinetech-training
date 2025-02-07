@@ -19,7 +19,7 @@ namespace MeetingRoomBooker.Application.Services
             var user = new User
             {
                 Username = request.Username,
-                Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Role = request.Role,
             };
 
@@ -59,7 +59,7 @@ namespace MeetingRoomBooker.Application.Services
 
             if (!string.IsNullOrEmpty(request.Password))
             {
-                user.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             }
 
             if (request.Role.HasValue)
@@ -74,13 +74,13 @@ namespace MeetingRoomBooker.Application.Services
             return MapToDto(user);
         }
 
-        private static UserDto MapToDto(User user)
+        public static UserDto MapToDto(User user)
         {
             return new UserDto
             {
                 Id = user.Id,
                 Username = user.Username,
-                Password = user.Password,
+                Password = user.PasswordHash,
                 Role = user.Role,
                 CreatedAt = user.CreatedAt,
                 LastModifiedAt = user.LastModifiedAt,

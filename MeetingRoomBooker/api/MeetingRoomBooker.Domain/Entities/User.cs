@@ -6,7 +6,9 @@ namespace MeetingRoomBooker.Domain.Entities
     public class User : BaseEntity
     {
         public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
         public UserRole Role { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

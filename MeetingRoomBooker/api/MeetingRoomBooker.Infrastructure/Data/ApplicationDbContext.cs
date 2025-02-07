@@ -21,7 +21,7 @@ namespace MeetingRoomBooker.Infrastructure.Data
                 .HasMaxLength(50);
 
             modelBuilder.Entity<User>()
-                .Property(u => u.Password)
+                .Property(u => u.PasswordHash)
                 .IsRequired()
                 .HasMaxLength(255);
 

@@ -42,5 +42,11 @@ namespace MeetingRoomBooker.Infrastructure.Repositories
             await context.SaveChangesAsync();
             return user;
         }
+
+        public async Task<User?> GetByRefreshTokenAsync(string refreshToken)
+        {
+            return await context.Users
+                .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+        }
     }
 }
