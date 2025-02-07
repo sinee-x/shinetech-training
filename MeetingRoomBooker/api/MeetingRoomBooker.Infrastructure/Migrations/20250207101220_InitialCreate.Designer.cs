@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeetingRoomBooker.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250206071053_InitialCreate")]
+    [Migration("20250207101220_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -100,17 +100,6 @@ namespace MeetingRoomBooker.Infrastructure.Migrations
                     b.Property<int?>("LastModifiedBy")
                         .HasColumnType("int");
 
-                    b.Property<int>("MeetingRoomId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MeetingTopic")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Participants")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
 
@@ -126,18 +115,11 @@ namespace MeetingRoomBooker.Infrastructure.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId1")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("MeetingRoomId");
 
                     b.HasIndex("RoomId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Reservations");
                 });
@@ -184,25 +166,13 @@ namespace MeetingRoomBooker.Infrastructure.Migrations
                 {
                     b.HasOne("MeetingRoomBooker.Domain.Entities.MeetingRoom", "MeetingRoom")
                         .WithMany()
-                        .HasForeignKey("MeetingRoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MeetingRoomBooker.Domain.Entities.MeetingRoom", null)
-                        .WithMany()
                         .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MeetingRoomBooker.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MeetingRoomBooker.Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

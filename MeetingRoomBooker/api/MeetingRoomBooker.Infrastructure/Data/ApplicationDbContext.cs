@@ -75,13 +75,13 @@ namespace MeetingRoomBooker.Infrastructure.Data
                 .HasDefaultValue("InProgress");
 
             modelBuilder.Entity<Reservation>()
-                .HasOne<User>()
+                .HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Reservation>()
-                .HasOne<MeetingRoom>()
+                .HasOne(r => r.MeetingRoom)
                 .WithMany()
                 .HasForeignKey(r => r.RoomId)
                 .OnDelete(DeleteBehavior.Cascade);
