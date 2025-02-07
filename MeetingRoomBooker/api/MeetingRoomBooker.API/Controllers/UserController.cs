@@ -1,4 +1,6 @@
-﻿using MeetingRoomBooker.Application.DTOs.Requests;
+﻿using MeetingRoomBooker.Application.Common.Models; // 确保引用 ApiResponse  
+using MeetingRoomBooker.Application.DTOs;
+using MeetingRoomBooker.Application.DTOs.Requests;
 using MeetingRoomBooker.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,52 +8,98 @@ namespace MeetingRoomBooker.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(IUserService userService) : ControllerBase
+    public class UserController : ApiControllerBase
     {
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        private readonly IUserService userService;
+
+        public UserController(IUserService userService)
         {
-            var users = await userService.GetAllUsersAsync();
-            return Ok(users);
+            this.userService = userService;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse<IEnumerable<UserDto>>>> Get()
+        {
+            try
+            {
+                var users = await userService.GetAllUsersAsync();
+                return OkResponse(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequestResponse<IEnumerable<UserDto>>(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<ActionResult<ApiResponse<UserDto>>> Get(int id)
         {
-            var user = await userService.GetUserByIdAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await userService.GetUserByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFoundResponse<UserDto>($"User with ID {id} not found.");
+                }
+                return OkResponse(user);
             }
-            return Ok(user);
+            catch (Exception ex)
+            {
+                return BadRequestResponse<UserDto>(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateUserRequestDto request)
+        public async Task<ActionResult<ApiResponse<UserDto>>> Post([FromBody] CreateUserRequestDto request)
         {
-            var userId = int.Parse(User.Claims.First(x => x.Type == "id").Value);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequestResponse<UserDto>(ModelState);
+                }
 
-            var createdUser = await userService.CreateUserAsync(userId, request);
-            return CreatedAtAction(nameof(Get), new { id = createdUser.Id }, createdUser);
+                var userId = int.Parse(User.Claims.First(x => x.Type == "id").Value);
+                var createdUser = await userService.CreateUserAsync(userId, request);
+                return CreatedResponse(createdUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequestResponse<UserDto>("An error occurred while creating the user.", ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UpdateUserRequestDto user)
+        public async Task<ActionResult<ApiResponse<UserDto>>> Put(int id, [FromBody] UpdateUserRequestDto user)
         {
-            var userId = int.Parse(User.Claims.First(x => x.Type == "id").Value);
-            var updatedUser = await userService.UpdateUserAsync(id, user, userId);
-            if (updatedUser == null)
+            try
             {
-                return NotFound();
+                var userId = int.Parse(User.Claims.First(x => x.Type == "id").Value);
+                var updatedUser = await userService.UpdateUserAsync(id, user, userId);
+                if (updatedUser == null)
+                {
+                    return NotFoundResponse<UserDto>($"User with ID {id} not found.");
+                }
+                return OkResponse(updatedUser);
             }
-            return Ok(updatedUser);
+            catch (Exception ex)
+            {
+                return BadRequestResponse<UserDto>("An error occurred while updating the user.", ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult<ApiResponse<bool>>> Delete(int id)
         {
-            await userService.DeleteUserAsync(id);
-            return NoContent();
+            try
+            {
+                await userService.DeleteUserAsync(id);
+                return OkResponse(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequestResponse<bool>("An error occurred while deleting the user.", ex.Message);
+            }
         }
     }
 }
