@@ -57,7 +57,7 @@ namespace MeetingRoomBooker.API.Extensions
             })
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -65,7 +65,7 @@ namespace MeetingRoomBooker.API.Extensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtSettings.Issuer,
                     ValidAudience = jwtSettings.Audience,
-                    IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                    IssuerSigningKey = new SymmetricSecurityKey(
                         System.Text.Encoding.UTF8.GetBytes(jwtSettings.Secret)
                     )
                 };
@@ -96,7 +96,6 @@ namespace MeetingRoomBooker.API.Extensions
                     }
                 };
             });
-
 
             return services;
         }

@@ -2,10 +2,12 @@
 using MeetingRoomBooker.Application.DTOs;
 using MeetingRoomBooker.Application.DTOs.Requests;
 using MeetingRoomBooker.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingRoomBooker.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ApiControllerBase

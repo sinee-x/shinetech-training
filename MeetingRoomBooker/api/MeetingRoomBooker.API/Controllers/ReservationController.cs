@@ -2,10 +2,12 @@
 using MeetingRoomBooker.Application.DTOs;
 using MeetingRoomBooker.Application.DTOs.Requests;
 using MeetingRoomBooker.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingRoomBooker.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ReservationController : ApiControllerBase
@@ -113,7 +115,7 @@ namespace MeetingRoomBooker.API.Controllers
             }
         }
 
-        [HttpGet("meetingroom/{meetingRoomId}")]
+        [HttpGet("meeting-room/{meetingRoomId}")]
         public async Task<ActionResult<ApiResponse<IEnumerable<ReservationDto>>>> GetReservationsByMeetingRoomId(int meetingRoomId)
         {
             try
