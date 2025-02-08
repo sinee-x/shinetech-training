@@ -9,7 +9,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\MeetingRoomBooker.Domain\MeetingRoomBooker.Domain.csproj" />
-		<ProjectReference Include="..\MeetingRoomReservation.Application\MeetingRoomBooker.Application.csproj" />
+		<ProjectReference Include="..\MeetingRoomBooker.Application\MeetingRoomBooker.Application.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
