@@ -1,0 +1,11 @@
+version: '3.8'  
+
+services:  
+  api:  
+    build:  
+      context: .  
+      dockerfile: MeetingRoomBooker.API/Dockerfile  
+    ports:  
+      - "8080:80"  
+    environment:  
+      ConnectionStrings__DefaultConnection: "Server=192.168.1.25;Database=mrb_data;User=root;Password=1qaz2wsx3edc4rfv;"

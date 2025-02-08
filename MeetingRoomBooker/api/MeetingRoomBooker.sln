@@ -5,11 +5,16 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingRoomBooker.API", "MeetingRoomBooker.API\MeetingRoomBooker.API.csproj", "{D433E721-33A1-4E32-8990-BB1ECFF9A73D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingRoomBooker.Application", "MeetingRoomReservation.Application\MeetingRoomBooker.Application.csproj", "{2D18575B-4804-49CB-832A-A93094073466}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingRoomBooker.Application", "MeetingRoomBooker.Application\MeetingRoomBooker.Application.csproj", "{2D18575B-4804-49CB-832A-A93094073466}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingRoomBooker.Domain", "MeetingRoomBooker.Domain\MeetingRoomBooker.Domain.csproj", "{15D7977A-78E4-468D-B334-7CF68924DF26}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingRoomBooker.Infrastructure", "MeetingRoomBooker.Infrastructure\MeetingRoomBooker.Infrastructure.csproj", "{A54947A8-15D3-4183-A7F8-3FE26E42514E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{85E37421-4370-4238-A6B4-D8CB0E4A890A}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
