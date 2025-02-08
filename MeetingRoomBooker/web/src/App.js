@@ -1,8 +1,17 @@
 import { useRoutes } from 'react-router-dom';
 import routes from './routes';
+import { AuthProvider } from './auth/AuthContext';
 
 function App() {
-  return useRoutes(routes);
+  var content = useRoutes(routes);
+
+  return (
+    <>
+      <AuthProvider>
+        {content}
+      </AuthProvider>
+    </>
+  );
 }
 
 export default App;
