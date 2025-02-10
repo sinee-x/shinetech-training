@@ -92,7 +92,7 @@ export default function Login() {
 
         try {
             var user = login(data.get('email'), data.get('password'));
-            console.log(user);
+            console.log("user", user);
         }
         catch (error) {
             console.error(error);

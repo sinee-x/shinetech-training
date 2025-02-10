@@ -21,9 +21,9 @@ namespace MeetingRoomBooker.Application.Services
             _jwtSettings = jwtSettings;
         }
 
-        public async Task<string> GeneratePasswordResetTokenAsync(string username)
+        public async Task<string> GeneratePasswordResetTokenAsync(string email)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null)
             {
                 throw new Exception("User not found");
@@ -40,12 +40,12 @@ namespace MeetingRoomBooker.Application.Services
             return token;
         }
 
-        public async Task<AuthResultDto> LoginAsync(string username, string password)
+        public async Task<AuthResultDto> LoginAsync(string email, string password)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
-                throw new Exception("Invalid username or password");
+                throw new Exception("Invalid email or password");
             }
 
             var token = GenerateJwtToken(user);
@@ -65,9 +65,9 @@ namespace MeetingRoomBooker.Application.Services
             };
         }
 
-        public async Task<bool> VerifyPasswordAsync(string username, string password)
+        public async Task<bool> VerifyPasswordAsync(string email, string password)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null)
             {
                 return false;
@@ -76,9 +76,9 @@ namespace MeetingRoomBooker.Application.Services
             return BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
         }
 
-        public async Task<bool> ChangePasswordAsync(string username, string currentPassword, string newPassword)
+        public async Task<bool> ChangePasswordAsync(string email, string currentPassword, string newPassword)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(currentPassword, user.PasswordHash))
             {
                 return false;
@@ -89,9 +89,9 @@ namespace MeetingRoomBooker.Application.Services
             return true;
         }
 
-        public async Task<bool> ResetPasswordAsync(string username, string newPassword)
+        public async Task<bool> ResetPasswordAsync(string email, string newPassword)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null)
             {
                 return false;
@@ -127,9 +127,9 @@ namespace MeetingRoomBooker.Application.Services
             };
         }
 
-        public async Task<bool> LogoutAsync(string username)
+        public async Task<bool> LogoutAsync(string email)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(username);
+            var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null)
             {
                 return false;
@@ -176,6 +176,7 @@ namespace MeetingRoomBooker.Application.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role.ToString()),
                     new Claim("id", user.Id.ToString())
                 }),

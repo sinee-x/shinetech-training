@@ -18,7 +18,7 @@ namespace MeetingRoomBooker.API.Controllers
         {
             try
             {
-                var result = await authService.LoginAsync(request.Username, request.Password);
+                var result = await authService.LoginAsync(request.Email, request.Password);
                 return OkResponse(result);
             }
             catch (Exception ex)

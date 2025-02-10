@@ -5,6 +5,7 @@ namespace MeetingRoomBooker.Domain.Repositories
     public interface IUserRepository
     {
         Task<User?> GetUserByIdAsync(int id);
+        Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByUsernameAsync(string username);
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<User> CreateUserAsync(User user);

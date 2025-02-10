@@ -10,14 +10,15 @@ namespace MeetingRoomBooker.Application.Services
     {
         public async Task<UserDto> CreateUserAsync(int userId, CreateUserRequestDto request)
         {
-            var existingUser = await userRepository.GetUserByUsernameAsync(request.Username);
+            var existingUser = await userRepository.GetUserByEmailAsync(request.Email);
             if (existingUser != null)
             {
-                throw new Exception("Username already exists");
+                throw new Exception("Email already exists");
             }
 
             var user = new User
             {
+                Email = request.Email,
                 Username = request.Username,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Role = request.Role,
@@ -79,6 +80,7 @@ namespace MeetingRoomBooker.Application.Services
             return new UserDto
             {
                 Id = user.Id,
+                Email = user.Email,
                 Username = user.Username,
                 Password = user.PasswordHash,
                 Role = user.Role,

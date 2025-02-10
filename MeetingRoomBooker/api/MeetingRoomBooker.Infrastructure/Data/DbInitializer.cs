@@ -22,6 +22,7 @@ namespace MeetingRoomBooker.Infrastructure.Data
             var users = new List<User>
             {
                 new() {
+                    Email = "admin@google.com",
                     Username = "admin",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
                     Role = UserRole.Admin,
@@ -29,6 +30,7 @@ namespace MeetingRoomBooker.Infrastructure.Data
                     CreatedAt = DateTime.UtcNow,
                 },
                 new() {
+                    Email = "user1@google.com",
                     Username = "user",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
                     Role = UserRole.User,

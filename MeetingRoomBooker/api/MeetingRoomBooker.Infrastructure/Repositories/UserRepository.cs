@@ -31,6 +31,11 @@ namespace MeetingRoomBooker.Infrastructure.Repositories
             return await context.Users.FindAsync(id);
         }
 
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
         public async Task<User?> GetUserByUsernameAsync(string username)
         {
             return await context.Users.FirstOrDefaultAsync(u => u.Username == username);

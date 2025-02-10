@@ -16,6 +16,11 @@ namespace MeetingRoomBooker.Infrastructure.Data
                 .HasKey(u => u.Id);
 
             modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            modelBuilder.Entity<User>()
                 .Property(u => u.Username)
                 .IsRequired()
                 .HasMaxLength(50);

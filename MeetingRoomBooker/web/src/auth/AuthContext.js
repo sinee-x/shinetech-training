@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { login as loginService } from "../services/authService";
 
 const AuthContext = createContext();
 
@@ -20,12 +21,20 @@ export function AuthProvider({ children }) {
         }
     }, []);
 
-    const login = (email, password) => {
-        const user = {"email": email};
-        localStorage.setItem("token", "1234");
-        localStorage.setItem("user", JSON.stringify(user));
-        setUser(user);
-        return user;
+    const login = async (email, password) => {
+        var response = await loginService(email, password);
+        console.log("response", response);
+        if (response.statusCode === 200) {
+            const user = response.data.user;
+            console.log("token", response.data.token);
+            console.log(user);
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("user", JSON.stringify(user));
+            setUser(user);
+            return response;
+        }
+
+        throw (response?.message);
     };
 
     const logout = () => {
