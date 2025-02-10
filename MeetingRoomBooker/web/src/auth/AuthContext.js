@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login as loginService } from "../services/authService";
+import { decodeJwt, isValidToken, setSession } from "../utils/jwt";
 
 const AuthContext = createContext();
 
@@ -9,36 +10,40 @@ export function AuthProvider({ children }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        console.log("token", token);
-        if (token) {
-            const savedUser = localStorage.getItem("user");
-            if (savedUser) {
-                setUser(JSON.parse(savedUser));
-            }
-        } else {
-            setUser(null);
+        const accessToken = localStorage.getItem("accessToken");
+        const isValid = isValidToken(accessToken || '');
+        if (isValid) {
+            setSession(accessToken);
+            setLoginUser(accessToken);
         }
     }, []);
 
     const login = async (email, password) => {
         var response = await loginService(email, password);
-        console.log("response", response);
-        if (response.statusCode === 200) {
-            const user = response.data.user;
-            console.log("token", response.data.token);
-            console.log(user);
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("user", JSON.stringify(user));
-            setUser(user);
-            return response;
+        if (response.data.statusCode === 200) {
+            const token = response.data.data.token;
+            setSession(token);
+            setLoginUser(token);
         }
 
         throw (response?.message);
     };
 
+    const setLoginUser = (token) => {
+        const jwtPayload = decodeJwt(token);
+        console.log('jwtPayload', jwtPayload);
+        const user = {
+            id: jwtPayload.id,
+            email: jwtPayload.email,
+            username: jwtPayload.unique_name,
+            role: jwtPayload.role,
+        };
+        localStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
+    };
+
     const logout = () => {
-        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
         setUser(null);
         navigate("/login");

@@ -82,17 +82,19 @@ export default function Login() {
         setOpen(false);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
         if (emailError || passwordError) {
             return;
         }
         const data = new FormData(event.currentTarget);
 
         try {
-            var user = login(data.get('email'), data.get('password'));
-            console.log("user", user);
+            var user = await login(data.get('email'), data.get('password'));
+            if (user) {
+                navigate("/");
+            }
         }
         catch (error) {
             console.error(error);
@@ -125,7 +127,7 @@ export default function Login() {
 
         return isValid;
     };
-    
+
     return (
         <>
             <CssBaseline enableColorScheme />

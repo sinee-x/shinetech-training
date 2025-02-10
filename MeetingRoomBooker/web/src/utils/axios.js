@@ -8,10 +8,6 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
   },
   (error) => {
@@ -25,7 +21,8 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      localStorage.removeItem("token");
+      localStorage.removeItem("refeshToken");
+      localStorage.removeItem("user");
       window.location.href = "/login";
     }
     return Promise.reject(error);

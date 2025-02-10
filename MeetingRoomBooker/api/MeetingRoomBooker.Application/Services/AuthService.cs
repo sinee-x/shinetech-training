@@ -60,8 +60,7 @@ namespace MeetingRoomBooker.Application.Services
             {
                 Token = token,
                 RefreshToken = refreshToken,
-                ExpiresIn = refreshTokenExpiryTime,
-                User = UserService.MapToDto(user)
+                ExpiresIn = refreshTokenExpiryTime
             };
         }
 
@@ -122,8 +121,7 @@ namespace MeetingRoomBooker.Application.Services
             {
                 Token = token,
                 RefreshToken = newRefreshToken,
-                ExpiresIn = refreshTokenExpiryTime,
-                User = UserService.MapToDto(user)
+                ExpiresIn = refreshTokenExpiryTime
             };
         }
 
