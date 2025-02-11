@@ -5,7 +5,7 @@ import Booking from "./pages/Booking";
 import RoomList from "./pages/RoomList";
 import AuthGuard from "./components/AuthGuard";
 import BookingList from "./pages/BookingList";
-import Account from "./pages/Account";
+import User from "./pages/User";
 import Home from "./pages/Home";
 
 const routes = [
@@ -22,9 +22,9 @@ const routes = [
                 element: <Home />,
             },
             {
-                path: "account",
-                element: <Account />,
-            },
+                path: "user",
+                element: <User />,
+            },  
             {
                 path: "booking",
                 element: <Booking />,

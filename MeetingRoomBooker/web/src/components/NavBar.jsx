@@ -24,6 +24,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useLocation } from 'react-router-dom';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+
 
 const drawerWidth = 240;
 
@@ -111,14 +116,25 @@ const NavBar = ({ setDrawerOpen }) => {
 
     const userOptions = [
         { label: "Home", path: "/", icon: <HomeIcon /> },
-        { label: "Account", path: "/account", icon: <AccountIcon /> },
+        { label: "User", path: "/user", icon: <AccountIcon /> },
         { label: "Bookings", path: "/booking-list", icon: <BallotIcon /> },
         { label: "RoomBooking", path: "/booking", icon: <AddHomeIcon /> },
         { label: "Rooms", path: "/room-list", icon: <MeetingRoomIcon /> }
     ];
 
+    const settings = ['Profile', 'User', 'Dashboard', 'Logout'];
+
     const theme = useTheme();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
+    const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
 
     const selected = userOptions.findIndex(option => option.path === location.pathname);
     const handleDrawerOpen = () => {
@@ -136,24 +152,56 @@ const NavBar = ({ setDrawerOpen }) => {
             <CssBaseline />
             <AppBar position="fixed" open={open}>
                 <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={[
-                            {
-                                marginRight: 5,
-                            },
-                            open && { display: 'none' },
-                        ]}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component={Link} to="/" sx={{ textDecoration: 'none', color: 'white' }}>
-                        Room Booking
-                    </Typography>
+                    <Box sx={{ flexGrow: 1 }}>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            sx={[
+                                {
+                                    marginRight: 5,
+                                },
+                                open && { display: 'none' },
+                            ]}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant="h6" noWrap component={Link} to="/" sx={{ textDecoration: 'none', color: 'white' }}>
+                            Room Booking
+                        </Typography>
+                    </Box>
+                    <Box sx={{ flexGrow: 0 }}>
+                        <Tooltip title="Open settings">
+                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                            </IconButton>
+                        </Tooltip>
+                        <Menu
+                            sx={{ mt: '45px' }}
+                            id="menu-appbar"
+                            anchorEl={anchorElUser}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElUser)}
+                            onClose={handleCloseUserMenu}
+                        >
+                            {settings.map((setting) => (
+                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </Box>
                 </Toolbar>
+
             </AppBar>
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
