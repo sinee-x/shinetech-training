@@ -11,9 +11,13 @@ export const getUsers = async () => {
 
 export const addUser = async (user) => {
   try {
-    const response = await axiosInstance.post("/user", user);
-    return response.data;
+    const response = await axiosInstance.post("/user", user, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data.data;
   } catch (error) {
-    return error.response.data;
+    return error.response;
   }
 }

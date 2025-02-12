@@ -20,7 +20,7 @@ namespace MeetingRoomBooker.API.Extensions
         {
             // Database context
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(
+                    options.UseMySql(
                     configuration.GetConnectionString("DefaultConnection"),
                     ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection"))
                 )

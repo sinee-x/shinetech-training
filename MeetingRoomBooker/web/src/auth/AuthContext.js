@@ -17,6 +17,11 @@ export function AuthProvider({ children }) {
         if (storedUser && accessToken && isValidToken(accessToken)) {
             setSession(accessToken);
             setUser(JSON.parse(storedUser)); // Parse and set user from localStorage
+        } else if (accessToken) {
+            // If token exists but is invalid, clean up
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("user");
+            setSession(null);
         }
     }, []);
 

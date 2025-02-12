@@ -1,7 +1,6 @@
-import React, { useMemo, useCallback, useEffect } from "react";
+import React, { useMemo, useCallback, useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { getUsers } from "../services/userService";
-import { useState } from "react";
 import UserTable from "../components/user/UserTable";
 import SearchBar from "../components/SearchBar";
 import AddButton from "../components/AddButton";
@@ -10,22 +9,30 @@ import AddUser from "../components/user/AddUser";
 const User = () => {
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+
+    const fetchUsers = async () => {
+        try {
+            getUsers().then((data) => {
+                const users = data.map((user) => (
+                    {
+                        id: user.id,
+                        email: user.email,
+                        username: user.username,
+                        role: user.role === 0 ? 'Admin' : 'User',
+                        createdAt: user.createdAt,
+                        lastModifiedAt: user.lastModifiedAt,
+                    }
+                ));
+                setUsers(users);
+            });
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    };
 
     useEffect(() => {
-        getUsers().then((data) => {
-            const users = data.map((user) => (
-                {
-                    id: user.id,
-                    email: user.email,
-                    username: user.username,
-                    role: user.role === 0 ? 'Admin' : 'User',
-                    createdAt: user.createdAt,
-                    lastModifiedAt: user.lastModifiedAt,
-                }
-            ));
-            setUsers(users);
-        });
+        fetchUsers();
     }, []);
 
     const filteredUsers = useMemo(() => {
@@ -64,6 +71,10 @@ const User = () => {
         setOpen(false);
     }
 
+    const onSaveSuccess = () => {
+        fetchUsers();
+    }
+
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, height: '50px' }}>
@@ -74,7 +85,7 @@ const User = () => {
                     <AddButton onClick={() => setOpen(true)} />
                 </Box>
             </Box >
-            <AddUser open={open} handleClose={handleModalClose} />
+            <AddUser open={open} handleClose={handleModalClose} onSaveSuccess={onSaveSuccess} />
             <UserTable users={filteredUsers} editUser={editUser} deleteUser={deleteUser} />
         </>
     );

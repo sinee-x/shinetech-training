@@ -25,19 +25,33 @@ const style = {
     p: 4,
 };
 
-const AddUser = ({ open, handleClose }) => {
+const AddUser = ({ open, handleClose, onSaveSuccess }) => {
     const [formData, setFormData] = React.useState({})
 
     const onChange = (e) => {
-        console.log("e", e)
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
-    const handleSave = () => {
-        console.log(formData)
-        addUser(formData).then(() => {
-            handleClose()
-        })
+    const handleSave = async () => {
+        try {
+            const user = {
+                ...formData,
+                "password": "123456"
+            }
+            const userJson = JSON.stringify(user);
+            var response = await addUser(userJson);
+            if (response.data.statusCode === 200) {
+                handleClose()
+                if (onSaveSuccess) {
+                    onSaveSuccess()
+                }
+                return;
+            }
+            console.log("Failed to add user", response.data.message);
+        }
+        catch (error) {
+
+        }
     }
 
     return (
@@ -99,8 +113,8 @@ const AddUser = ({ open, handleClose }) => {
                                     name="role"
                                     onChange={(e) => onChange(e)}
                                 >
-                                    <MenuItem value={0}>Admin</MenuItem>
-                                    <MenuItem value={1}>User</MenuItem>
+                                    <MenuItem value={0} >Admin</MenuItem>
+                                    <MenuItem value={1} >User</MenuItem>
                                 </Select>
                             </FormControl>
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '20px' }}>
