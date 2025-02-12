@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "./components/Layout";
+import Layout from "./components/layout/Layout";
 import Login from "./pages/auth/Login";
 import Booking from "./pages/Booking";
 import RoomList from "./pages/RoomList";

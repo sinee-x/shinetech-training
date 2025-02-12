@@ -8,3 +8,12 @@ export const getUsers = async () => {
     console.error(error);
   }
 }
+
+export const addUser = async (user) => {
+  try {
+    const response = await axiosInstance.post("/user", user);
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+}
