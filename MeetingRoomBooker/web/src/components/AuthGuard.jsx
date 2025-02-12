@@ -4,11 +4,10 @@ import { useAuth } from "../auth/AuthContext";
 
 function AuthGuard({ children }) {
     const { user } = useAuth();
-    
+
     if (!user) {
         return <Navigate to="/login" replace />;
     }
-
     return children;
 }
 

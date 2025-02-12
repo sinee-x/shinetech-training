@@ -10,18 +10,20 @@ export function AuthProvider({ children }) {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const storedUser = localStorage.getItem("user");
         const accessToken = localStorage.getItem("accessToken");
-        const isValid = isValidToken(accessToken || '');
-        if (isValid) {
+
+        // Check if both user and token exist and are valid
+        if (storedUser && accessToken && isValidToken(accessToken)) {
             setSession(accessToken);
-            setLoginUser(accessToken);
+            setUser(JSON.parse(storedUser)); // Parse and set user from localStorage
         }
     }, []);
 
     const login = async (email, password) => {
         var response = await loginService(email, password);
-        if (response.data.statusCode === 200) {
-            const token = response.data.data.token;
+        if (response.statusCode === 200) {
+            const token = response.data.token;
             setSession(token);
             setLoginUser(token);
         }
@@ -29,15 +31,15 @@ export function AuthProvider({ children }) {
         throw (response?.message);
     };
 
-    const setLoginUser = (token) => {
-        const jwtPayload = decodeJwt(token);
-        console.log('jwtPayload', jwtPayload);
+    const setLoginUser = (accessToken) => {
+        const jwtPayload = decodeJwt(accessToken);
         const user = {
             id: jwtPayload.id,
             email: jwtPayload.email,
             username: jwtPayload.unique_name,
             role: jwtPayload.role,
         };
+        localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("user", JSON.stringify(user));
         setUser(user);
     };
