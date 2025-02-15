@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useState } from "react";
 import { Fade, Modal } from "@mui/material";
 import { Backdrop } from "@mui/material";
 import { Box } from "@mui/material";
@@ -11,7 +12,8 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import { addUser } from "../../services/userService";
+import { addUser, updateUser } from "../../services/userService";
+import Notification from "../feedback/Notification";
 
 
 const style = {
@@ -25,34 +27,92 @@ const style = {
     p: 4,
 };
 
-const AddUser = ({ open, handleClose, onSaveSuccess }) => {
-    const [formData, setFormData] = React.useState({})
+const initialState = {
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+    severity: 'success',
+    message: 'User added successfully'
+}
 
+const initialUser = {
+    email: "",
+    username: "",
+    role: 1
+}
+
+const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
+    const [formData, setFormData] = useState(initialUser)
+    const [state, setState] = useState(initialState);
+
+    useEffect(() => {
+        if(!user) return;
+        if (user.id) {
+            setFormData(user);
+        }
+        else
+        {
+            setFormData(initialUser);
+        }
+    }, [user]);
+    
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
     const handleSave = async () => {
         try {
-            const user = {
-                ...formData,
-                "password": "123456"
+            if (user.id) {
+                await handleEditUser();
             }
-            const userJson = JSON.stringify(user);
-            var response = await addUser(userJson);
-            if (response.data.statusCode === 200) {
-                handleClose()
-                if (onSaveSuccess) {
-                    onSaveSuccess()
-                }
-                return;
+            else {
+                await handleAddUser();
             }
-            console.log("Failed to add user", response.data.message);
         }
         catch (error) {
 
         }
     }
+
+    const handleAddUser = async () => {
+        const data = {
+            ...formData,
+            "password": "123456"
+        }
+        const userJson = JSON.stringify(data);
+        var response = await addUser(userJson);
+        if (response.statusCode === 201) {
+            handleClose()
+            if (onSaveSuccess) {
+                onSaveSuccess();
+                setState({ ...initialState, open: true, message: "User added successfully" });
+            }
+            return;
+        }
+        console.log("Failed to add user", response.data.message);
+    }
+
+    const handleEditUser = async () => {
+        const data = {
+            ...formData,
+            "id": user.id
+        }
+        const userJson = JSON.stringify(data);
+        var response = await updateUser(userJson);
+        if (response.statusCode === 201) {
+            handleClose()
+            if (onSaveSuccess) {
+                onSaveSuccess();
+                setState({ ...initialState, open: true, message: "User added successfully" });
+            }
+            return;
+        }
+        console.log("Failed to add user", response.data.message);
+    }
+
+    const handleNotificationClose = () => {
+        setState({ ...state, open: false });
+    };
 
     return (
         <>
@@ -77,7 +137,7 @@ const AddUser = ({ open, handleClose, onSaveSuccess }) => {
                                 fontSize: '18px',
                                 top: '15px'
                             }}
-                        >Add User</Typography>
+                        >{title}</Typography>
                         <IconButton
                             aria-label="close"
                             onClick={handleClose}
@@ -125,8 +185,9 @@ const AddUser = ({ open, handleClose, onSaveSuccess }) => {
                     </Box>
                 </Fade>
             </Modal>
+            <Notification state={state} handleClose={handleNotificationClose} />
         </>
     );
 }
 
-export default AddUser;
+export default UserForm;

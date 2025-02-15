@@ -28,7 +28,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
-
+import { useAuth } from '../../auth/AuthContext';
 
 const drawerWidth = 240;
 
@@ -113,6 +113,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const NavBar = ({ setDrawerOpen }) => {
 
     const location = useLocation();
+    const { logout } = useAuth();
 
     const userOptions = [
         { label: "Home", path: "/", icon: <HomeIcon /> },
@@ -135,6 +136,16 @@ const NavBar = ({ setDrawerOpen }) => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleSettingClick = (setting) => {
+        console.log("setting clicked", setting);
+
+        if (setting === "Logout") {
+            logout();
+        }
+
+        handleCloseUserMenu();
+    }
 
     const selected = userOptions.findIndex(option => option.path === location.pathname);
     const handleDrawerOpen = () => {
@@ -194,7 +205,7 @@ const NavBar = ({ setDrawerOpen }) => {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                <MenuItem key={setting} onClick={() => handleSettingClick(setting)}>
                                     <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                                 </MenuItem>
                             ))}

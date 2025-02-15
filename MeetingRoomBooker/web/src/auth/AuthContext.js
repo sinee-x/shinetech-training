@@ -7,6 +7,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState();
+    const [isInit, setIsInit] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,6 +24,7 @@ export function AuthProvider({ children }) {
             localStorage.removeItem("user");
             setSession(null);
         }
+        setIsInit(true)
     }, []);
 
     const login = async (email, password) => {
@@ -57,7 +59,7 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, isInit }}>
             {children}
         </AuthContext.Provider>
     );

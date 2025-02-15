@@ -1,14 +1,16 @@
 import { useRoutes } from 'react-router-dom';
 import routes from './routes';
 import { AuthProvider } from './auth/AuthContext';
-
+import { ConfirmProvider } from "material-ui-confirm";
 function App() {
   var content = useRoutes(routes);
 
   return (
     <>
       <AuthProvider>
-        {content}
+        <ConfirmProvider>
+          {content}
+        </ConfirmProvider>
       </AuthProvider>
     </>
   );

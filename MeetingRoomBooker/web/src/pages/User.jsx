@@ -1,15 +1,20 @@
 import React, { useMemo, useCallback, useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { getUsers } from "../services/userService";
+import { getUsers, deleteUser } from "../services/userService";
 import UserTable from "../components/user/UserTable";
 import SearchBar from "../components/SearchBar";
 import AddButton from "../components/AddButton";
-import AddUser from "../components/user/AddUser";
+import UserForm from "../components/user/UserForm";
+import { useConfirm } from "material-ui-confirm"
 
 const User = () => {
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [open, setOpen] = useState(false);
+    const [title, setTitle] = useState('');
+    const [userData, setUserData] = useState(null);
+
+    const confirm = useConfirm();
 
     const fetchUsers = async () => {
         try {
@@ -45,20 +50,31 @@ const User = () => {
         });
     }, [searchTerm, users]);
 
-    const deleteUser = useCallback(
-        (id) => () => {
-            setTimeout(() => {
-                console.log("Deleting user with ID:", id);
+    const handleDeleteUser = useCallback(
+        (id, email) => async () => {
+            const { confirmed, reason } = await confirm({
+                title: "Are you sure?",
+                description: "This action will delete the user permanently: " + email,
             });
+
+            if (confirmed) {
+                deleteUser(id).then(() => {
+                    fetchUsers();
+                });
+            } else {
+                console.log("Deletion cancelled. Reason:", reason);
+            }
         },
-        [],
+        [confirm],
     );
 
-    const editUser = useCallback(
-        (id) => () => {
-            setTimeout(() => {
-                console.log("Editing user with ID:", id);
-            });
+    const handleEditUser = useCallback(
+        (id, row) => () => {
+            console.log("Edit user with ID:", id);
+            console.log("Row data:", row);
+            setOpen(true);
+            setTitle('Edit User');
+            setUserData(row);
         },
         [],
     );
@@ -75,18 +91,24 @@ const User = () => {
         fetchUsers();
     }
 
+    const handleAddUser = () => {
+        setOpen(true);
+        setTitle('Add User');
+        setUserData(null);
+    }
+
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, height: '50px' }}>
                 <Box>
-                    <SearchBar handleOnChange={handleOnChange} />
+                    <SearchBar onChange={handleOnChange} />
                 </Box>
                 <Box>
-                    <AddButton onClick={() => setOpen(true)} />
+                    <AddButton onClick={handleAddUser} />
                 </Box>
             </Box >
-            <AddUser open={open} handleClose={handleModalClose} onSaveSuccess={onSaveSuccess} />
-            <UserTable users={filteredUsers} editUser={editUser} deleteUser={deleteUser} />
+            <UserForm open={open} handleClose={handleModalClose} onSaveSuccess={onSaveSuccess} title={title} user={userData} />
+            <UserTable users={filteredUsers} editUser={handleEditUser} deleteUser={handleDeleteUser} />
         </>
     );
 }

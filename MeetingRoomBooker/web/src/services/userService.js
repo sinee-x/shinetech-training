@@ -16,7 +16,29 @@ export const addUser = async (user) => {
         "Content-Type": "application/json"
       }
     });
-    return response.data.data;
+    return response.data;
+  } catch (error) {
+    return error.response;
+  }
+}
+
+export const updateUser = async (user) => {
+  try {
+    const response = await axiosInstance.put(`/user/${user.id}`, user, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return response.data;
+  } catch (error) {
+    return error.response;
+  }
+}
+
+export const deleteUser = async (id) => {
+  try {
+    const response = await axiosInstance.delete(`/user/${id}`);
+    return response.data;
   } catch (error) {
     return error.response;
   }

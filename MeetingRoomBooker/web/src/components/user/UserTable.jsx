@@ -52,12 +52,12 @@ const UserTable = ({ users, deleteUser, editUser }) => {
                     <GridActionsCellItem
                         icon={<EditIcon sx={{ color: '#009dff' }} />}
                         label="Edit"
-                        onClick={editUser(params.id)}
+                        onClick={editUser(params.id, params.row)}
                     />,
                     <GridActionsCellItem
                         icon={<DeleteIcon sx={{ color: '#fe4066' }} />}
                         label="Delete"
-                        onClick={deleteUser(params.id)}
+                        onClick={deleteUser(params.id, params.row.email)}
                     />
                 ],
             }

@@ -67,6 +67,7 @@ export default function Login() {
     const [passwordError, setPasswordError] = React.useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [open, setOpen] = React.useState(false);
+    const [error, setError] = React.useState('');
 
     useEffect(() => {
         if (user) {
@@ -98,6 +99,7 @@ export default function Login() {
         }
         catch (error) {
             console.error(error);
+            error !== "Success" ? setError(error) : setError('');
         }
     };
 
@@ -127,6 +129,9 @@ export default function Login() {
 
         return isValid;
     };
+    const handleOnChange = () => {
+        setError('');
+    }
 
     return (
         <>
@@ -151,6 +156,9 @@ export default function Login() {
                             gap: 2,
                         }}
                     >
+                        <Typography variant="overline" gutterBottom sx={{ display: 'block', color: 'red' }}>
+                            {error}
+                        </Typography>
                         <FormControl>
                             <FormLabel htmlFor="email">Email</FormLabel>
                             <TextField
@@ -166,6 +174,7 @@ export default function Login() {
                                 fullWidth
                                 variant="outlined"
                                 color={emailError ? 'error' : 'primary'}
+                                onChange={() => handleOnChange()}
                             />
                         </FormControl>
                         <FormControl>
@@ -183,6 +192,7 @@ export default function Login() {
                                 fullWidth
                                 variant="outlined"
                                 color={passwordError ? 'error' : 'primary'}
+                                onChange={() => handleOnChange()}
                             />
                         </FormControl>
                         <FormControlLabel
