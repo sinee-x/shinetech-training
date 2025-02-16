@@ -138,8 +138,6 @@ const NavBar = ({ setDrawerOpen }) => {
     };
 
     const handleSettingClick = (setting) => {
-        console.log("setting clicked", setting);
-
         if (setting === "Logout") {
             logout();
         }

@@ -46,23 +46,22 @@ const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
     const [state, setState] = useState(initialState);
 
     useEffect(() => {
-        if(!user) return;
-        if (user.id) {
-            setFormData(user);
+        if (user) {
+            const userData = { ...user, role: user.role === 'Admin' ? 0 : 1 };
+            setFormData(userData);
         }
-        else
-        {
+        else {
             setFormData(initialUser);
         }
     }, [user]);
-    
+
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
     const handleSave = async () => {
         try {
-            if (user.id) {
+            if (user) {
                 await handleEditUser();
             }
             else {
@@ -79,6 +78,7 @@ const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
             ...formData,
             "password": "123456"
         }
+        console.log("data", data);
         const userJson = JSON.stringify(data);
         var response = await addUser(userJson);
         if (response.statusCode === 201) {
@@ -97,17 +97,18 @@ const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
             ...formData,
             "id": user.id
         }
+        console.log("data", data);
         const userJson = JSON.stringify(data);
-        var response = await updateUser(userJson);
-        if (response.statusCode === 201) {
+        var response = await updateUser(user.id, userJson);
+        if (response.statusCode === 200) {
             handleClose()
             if (onSaveSuccess) {
                 onSaveSuccess();
-                setState({ ...initialState, open: true, message: "User added successfully" });
+                setState({ ...initialState, open: true, message: "User updated successfully" });
             }
             return;
         }
-        console.log("Failed to add user", response.data.message);
+        console.log("Failed to update user", response.data.message);
     }
 
     const handleNotificationClose = () => {

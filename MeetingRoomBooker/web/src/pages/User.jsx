@@ -6,6 +6,15 @@ import SearchBar from "../components/SearchBar";
 import AddButton from "../components/AddButton";
 import UserForm from "../components/user/UserForm";
 import { useConfirm } from "material-ui-confirm"
+import Notification from "../components/feedback/Notification";
+
+const initialState = {
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+    severity: 'success',
+    message: 'User added successfully'
+}
 
 const User = () => {
     const [users, setUsers] = useState([]);
@@ -13,6 +22,7 @@ const User = () => {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [userData, setUserData] = useState(null);
+    const [state, setState] = useState(initialState);
 
     const confirm = useConfirm();
 
@@ -59,6 +69,7 @@ const User = () => {
 
             if (confirmed) {
                 deleteUser(id).then(() => {
+                    setState({ ...initialState, open: true, message: "User deleted successfully" });
                     fetchUsers();
                 });
             } else {
@@ -70,8 +81,6 @@ const User = () => {
 
     const handleEditUser = useCallback(
         (id, row) => () => {
-            console.log("Edit user with ID:", id);
-            console.log("Row data:", row);
             setOpen(true);
             setTitle('Edit User');
             setUserData(row);
@@ -97,6 +106,10 @@ const User = () => {
         setUserData(null);
     }
 
+    const handleNotificationClose = () => {
+        setState({ ...state, open: false });
+    };
+
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, height: '50px' }}>
@@ -109,6 +122,7 @@ const User = () => {
             </Box >
             <UserForm open={open} handleClose={handleModalClose} onSaveSuccess={onSaveSuccess} title={title} user={userData} />
             <UserTable users={filteredUsers} editUser={handleEditUser} deleteUser={handleDeleteUser} />
+            <Notification state={state} handleClose={handleNotificationClose} />
         </>
     );
 }

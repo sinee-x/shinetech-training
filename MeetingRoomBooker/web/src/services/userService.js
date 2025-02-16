@@ -22,9 +22,9 @@ export const addUser = async (user) => {
   }
 }
 
-export const updateUser = async (user) => {
+export const updateUser = async (id, user) => {
   try {
-    const response = await axiosInstance.put(`/user/${user.id}`, user, {
+    const response = await axiosInstance.put(`/user/${id}`, user, {
       headers: {
         "Content-Type": "application/json"
       }
