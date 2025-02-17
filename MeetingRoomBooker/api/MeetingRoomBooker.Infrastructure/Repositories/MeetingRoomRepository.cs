@@ -31,9 +31,9 @@ namespace MeetingRoomBooker.Infrastructure.Repositories
             return await context.MeetingRooms.FindAsync(id);
         }
 
-        public async Task<IEnumerable<MeetingRoom>> GetMeetingRoomsByRoomNameAsync(string roomName)
+        public async Task<MeetingRoom?> GetMeetingRoomsByRoomNameAsync(string roomName)
         {
-            return await context.MeetingRooms.Where(m => m.RoomName == roomName).ToListAsync();
+            return await context.MeetingRooms.FirstOrDefaultAsync(m => m.RoomName == roomName);
         }
 
         public async Task<MeetingRoom> UpdateMeetingRoomAsync(int id, MeetingRoom meetingRoom)

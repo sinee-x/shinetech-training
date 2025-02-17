@@ -12,13 +12,12 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import { addUser, updateUser } from "../../services/userService";
 import Notification from "../feedback/Notification";
-
+import { addMeetingRoom, updateMeetingRoom } from "../../services/meetingRoomService";
 
 const style = {
     position: 'absolute',
-    top: '40%',
+    top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 800,
@@ -32,28 +31,30 @@ const initialState = {
     vertical: 'top',
     horizontal: 'center',
     severity: 'success',
-    message: 'User added successfully'
+    message: 'Meeting room added successfully'
 }
 
-const initialUser = {
-    email: "",
-    username: "",
-    role: 1
+const initialRoom = {
+    roomName: "",
+    capacity: 0,
+    status: "Available",
+    roomType: "",
+    availableTime: "",
+    notes: "",
 }
 
-const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
-    const [formData, setFormData] = useState(initialUser)
+const RoomForm = ({ title, open, handleClose, onSaveSuccess, roomData }) => {
+    const [formData, setFormData] = useState(initialRoom)
     const [state, setState] = useState(initialState);
 
     useEffect(() => {
-        if (user) {
-            const userData = { ...user, role: user.role === 'Admin' ? 0 : 1 };
-            setFormData(userData);
+        if (roomData) {
+            setFormData(roomData);
         }
         else {
-            setFormData(initialUser);
+            setFormData(initialRoom);
         }
-    }, [user]);
+    }, [roomData]);
 
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -61,11 +62,11 @@ const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
 
     const handleSave = async () => {
         try {
-            if (user) {
-                await handleEditUser();
+            if (roomData) {
+                await handleEditRoom();
             }
             else {
-                await handleAddUser();
+                await handleAddRoom();
             }
         }
         catch (error) {
@@ -73,42 +74,38 @@ const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
         }
     }
 
-    const handleAddUser = async () => {
-        const data = {
-            ...formData,
-            "password": "123456"
-        }
-        const userJson = JSON.stringify(data);
-        const response = await addUser(userJson);
+    const handleAddRoom = async () => {
+        const roomJson = JSON.stringify(formData);
+        const response = await addMeetingRoom(roomJson);
         if (response.statusCode === 201) {
             handleClose()
             if (onSaveSuccess) {
                 onSaveSuccess();
-                setState({ ...initialState, open: true, message: "User added successfully" });
-                setFormData(initialUser);
+                setState({ ...initialState, open: true, message: "Meeting room added successfully" });
+                setFormData(initialRoom);
             }
             return;
         }
-        console.log("Failed to add user", response.data.message);
+        console.log("Failed to add room", response.data.message);
     }
 
-    const handleEditUser = async () => {
+    const handleEditRoom = async () => {
         const data = {
             ...formData,
-            "id": user.id
+            "id": roomData.id
         }
-        const userJson = JSON.stringify(data);
-        const response = await updateUser(user.id, userJson);
+        const roomJson = JSON.stringify(data);
+        const response = await updateMeetingRoom(roomData.id, roomJson);
         if (response.statusCode === 200) {
             handleClose()
             if (onSaveSuccess) {
                 onSaveSuccess();
-                setState({ ...initialState, open: true, message: "User updated successfully" });
-                setFormData(initialUser);
+                setState({ ...initialState, open: true, message: "Meeting room updated successfully" });
+                setFormData(initialRoom);
             }
             return;
         }
-        console.log("Failed to update user", response.data.message);
+        console.log("Failed to update room", response.data.message);
     }
 
     const handleNotificationClose = () => {
@@ -154,30 +151,52 @@ const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
                         <Box component='form' sx={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '30px' }} autoComplete="off">
                             <TextField
                                 required
-                                label="Email"
-                                name="email"
-                                value={formData.email}
+                                label="RoomName"
+                                name="roomName"
+                                value={formData.roomName}
                                 onChange={(e) => onChange(e)}
                             />
                             <TextField
                                 required
-                                label="UserName"
-                                name="username"
-                                value={formData.username}
+                                label="Capacity"
+                                name="capacity"
+                                value={formData.capacity}
                                 onChange={(e) => onChange(e)}
                             />
                             <FormControl>
                                 <InputLabel>Role</InputLabel>
                                 <Select
-                                    value={formData.role}
-                                    label="Role"
-                                    name="role"
+                                    value={formData.status}
+                                    label="Status"
+                                    name="status"
                                     onChange={(e) => onChange(e)}
                                 >
-                                    <MenuItem value={0} >Admin</MenuItem>
-                                    <MenuItem value={1} >User</MenuItem>
+                                    <MenuItem value={"Available"} >Available</MenuItem>
+                                    <MenuItem value={"Stopped"} >Stopped</MenuItem>
                                 </Select>
                             </FormControl>
+                            <TextField
+                                required
+                                label="RoomType"
+                                name="roomType"
+                                value={formData.roomType}
+                                onChange={(e) => onChange(e)}
+                            />
+                            <TextField
+                                required
+                                label="Available Time"
+                                name="availableTime"
+                                value={formData.availableTime}
+                                onChange={(e) => onChange(e)}
+                            />
+                            <TextField
+                                required
+                                label="Notes"
+                                name="notes"
+                                value={formData.notes}
+                                onChange={(e) => onChange(e)}
+                            />
+
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '20px' }}>
                                 <Button variant="outlined" sx={{ marginTop: '20px' }} onClick={handleClose}>Cancel</Button>
                                 <Button variant="contained" sx={{ marginTop: '20px' }} onClick={handleSave}>Save</Button>
@@ -191,4 +210,4 @@ const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
     );
 }
 
-export default UserForm;
+export default RoomForm;

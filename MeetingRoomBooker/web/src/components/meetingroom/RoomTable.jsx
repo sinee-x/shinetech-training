@@ -6,35 +6,52 @@ import { Box, Paper } from "@mui/material";
 
 const paginationModel = { page: 0, pageSize: 10 };
 
-const UserTable = ({ users, deleteUser, editUser }) => {
-    const rowsWithIndex = users.map((user, index) => ({  
-        ...user,  
-        id: user.id,
+const RoomTable = ({ rooms, deleteRoom, editRoom }) => {
+    const rowsWithIndex = rooms.map((room, index) => ({  
+        ...room,  
+        id: room.id,
         no: index + 1
     })); 
     const columns = useMemo(
         () => [
             { field: 'no', headerName: 'No.', width: 70 },
             {
-                field: 'email',
-                headerName: 'Email',
-                width: 300,
-                description: 'This column has a value getter and is not sortable.',
-                sortable: false,
-                valueGetter: (value, row) => `${row.email || ''}`,
-            },
-            {
-                field: 'username',
-                headerName: 'Name',
+                field: 'roomName',
+                headerName: 'Room Name',
                 width: 200,
                 description: 'This column has a value getter and is not sortable.',
                 sortable: false,
-                valueGetter: (value, row) => `${row.username || ''}`,
+                valueGetter: (value, row) => `${row.roomName || ''}`,
             },
             {
-                field: 'role',
-                headerName: 'Role',
+                field: 'capacity',
+                headerName: 'Capacity',
+                width: 100,
+                description: 'This column has a value getter and is not sortable.',
+                sortable: false,
+                valueGetter: (value, row) => `${row.capacity || ''}`,
+            },
+            {
+                field: 'status',
+                headerName: 'Status',
+                width: 100,
+            },
+            {
+                field: 'roomType',
+                headerName: 'Room Type',
+                width: 100,
+            },
+            {
+                field: 'availableTime',
+                headerName: 'Available Time',
                 width: 150,
+            },
+            {
+                field: 'notes',
+                headerName: 'Notes',
+                width: 250,
+                sortable: false,
+                valueGetter: (value, row) => `${row.notes || ''}`,
             },
             {
                 field: 'createdAt',
@@ -57,17 +74,17 @@ const UserTable = ({ users, deleteUser, editUser }) => {
                     <GridActionsCellItem
                         icon={<EditIcon sx={{ color: '#009dff' }} />}
                         label="Edit"
-                        onClick={editUser(params.id, params.row)}
+                        onClick={editRoom(params.id, params.row)}
                     />,
                     <GridActionsCellItem
                         icon={<DeleteIcon sx={{ color: '#fe4066' }} />}
                         label="Delete"
-                        onClick={deleteUser(params.id, params.row.email)}
+                        onClick={deleteRoom(params.id, params.row.roomName)}
                     />
                 ],
             }
         ],
-        [deleteUser, editUser]
+        [deleteRoom, editRoom]
     );
 
     return (
@@ -85,4 +102,4 @@ const UserTable = ({ users, deleteUser, editUser }) => {
     );
 };
 
-export default UserTable;
+export default RoomTable;

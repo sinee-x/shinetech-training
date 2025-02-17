@@ -10,8 +10,8 @@ namespace MeetingRoomBooker.Application.Services
     {
         public async Task<MeetingRoomDto> CreateMeetingRoomAsync(int userId, CreateMeetingRoomRequestDto request)
         {
-            var existingUser = await meetingRoomRepository.GetMeetingRoomsByRoomNameAsync(request.RoomName);
-            if (existingUser != null)
+            var existingRoom = await meetingRoomRepository.GetMeetingRoomsByRoomNameAsync(request.RoomName);
+            if (existingRoom != null)
             {
                 throw new Exception("Room name already exists");
             }

@@ -28,11 +28,11 @@ export function AuthProvider({ children }) {
     }, []);
 
     const login = async (email, password) => {
-        var response = await loginService(email, password);
+        const response = await loginService(email, password);
         if (response.statusCode === 200) {
             const token = response.data.token;
             setSession(token);
-            setLoginUser(token);
+            return setLoginUser(token);
         }
 
         throw (response?.message);
@@ -49,6 +49,7 @@ export function AuthProvider({ children }) {
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("user", JSON.stringify(user));
         setUser(user);
+        return user;
     };
 
     const logout = () => {

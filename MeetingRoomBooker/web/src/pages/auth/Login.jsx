@@ -16,6 +16,7 @@ import ForgotPassword from './ForgotPassword';
 import { useAuth } from '../../auth/AuthContext';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -62,16 +63,23 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 export default function Login() {
     const navigate = useNavigate();
     const { login, user } = useAuth();
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const [open, setOpen] = React.useState(false);
-    const [error, setError] = React.useState('');
+    const [emailError, setEmailError] = useState(false);
+    const [emailErrorMessage, setEmailErrorMessage] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+    const [open, setOpen] = useState(false);
+    const [error, setError] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
 
     useEffect(() => {
         if (user) {
             navigate("/");
+        } else {
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            if (rememberedEmail) {
+                document.getElementById('email').value = rememberedEmail;
+                setRememberMe(true);
+            }
         }
     }, [user, navigate]);
 
@@ -92,8 +100,13 @@ export default function Login() {
         const data = new FormData(event.currentTarget);
 
         try {
-            var user = await login(data.get('email'), data.get('password'));
+            const user = await login(data.get('email'), data.get('password'));
             if (user) {
+                if (rememberMe) {
+                    localStorage.setItem('rememberedEmail', data.get('email'));
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                }
                 navigate("/");
             }
         }
@@ -196,7 +209,7 @@ export default function Login() {
                             />
                         </FormControl>
                         <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
+                            control={<Checkbox value="remember" color="primary" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />}
                             label="Remember me"
                         />
                         <ForgotPassword open={open} handleClose={handleClose} />
