@@ -20,6 +20,7 @@ import MuiAppBar from '@mui/material/AppBar';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useLocation } from 'react-router-dom';
@@ -73,8 +74,7 @@ const AppBar = styled(MuiAppBar, {
         {
             props: ({ open }) => open,
             style: {
-                marginLeft: drawerWidth,
-                width: `calc(100% - ${drawerWidth}px)`,
+                width: '100%',
                 transition: theme.transitions.create(['width', 'margin'], {
                     easing: theme.transitions.easing.sharp,
                     duration: theme.transitions.duration.enteringScreen,
@@ -118,7 +118,7 @@ const NavBar = ({ setDrawerOpen }) => {
         { label: "Home", path: "/", icon: <HomeIcon /> },
         { label: "Users", path: "/user", icon: <AccountIcon /> },
         { label: "Bookings", path: "/booking", icon: <AddHomeIcon /> },
-        { label: "Rooms", path: "/room-list", icon: <MeetingRoomIcon /> }
+        { label: "Meeting Rooms", path: "/room-list", icon: <MeetingRoomIcon /> }
     ];
 
     const settings = ['Profile', 'User', 'Dashboard', 'Logout'];
@@ -166,15 +166,23 @@ const NavBar = ({ setDrawerOpen }) => {
                             onClick={handleDrawerOpen}
                             edge="start"
                             sx={[
-                                {
-                                    marginRight: 5,
-                                },
-                                open && { display: 'none' },
+                                open ? { display: 'none' } : { display: 'inline' },
                             ]}
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="h6" noWrap component={Link} to="/" sx={{ textDecoration: 'none', color: 'white' }}>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerClose}
+                            edge="start"
+                            sx={[
+                                !open ? { display: 'none' } : { display: 'inline' },
+                            ]}
+                        >
+                            <MenuOpenIcon />
+                        </IconButton>
+                        <Typography variant="h6" noWrap component={Link} to="/" sx={{ textDecoration: 'none', color: 'white', marginLeft: 1 }}>
                             Room Booking
                         </Typography>
                     </Box>

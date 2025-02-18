@@ -9,9 +9,12 @@ function Layout() {
     return (
         <>
             <NavBar setDrawerOpen={setDrawerOpen} />
-            <Box ml={drawerOpen ? 32 : 11} mt={10} pr={2}>
+            <Box sx={[
+                { marginTop: '80px', paddingRight: '16px', transition: 'margin-left 0.3s ease' },
+                drawerOpen ? { marginLeft: '256px' } : { marginLeft: '80px' }
+            ]} >
                 <Outlet />
-            </Box>
+            </Box >
         </>
     );
 }
