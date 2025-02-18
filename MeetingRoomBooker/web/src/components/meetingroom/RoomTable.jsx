@@ -3,15 +3,16 @@ import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, Paper } from "@mui/material";
+import AddHomeIcon from '@mui/icons-material/AddHome';
 
 const paginationModel = { page: 0, pageSize: 10 };
 
-const RoomTable = ({ rooms, deleteRoom, editRoom }) => {
-    const rowsWithIndex = rooms.map((room, index) => ({  
-        ...room,  
+const RoomTable = ({ rooms, deleteRoom, editRoom, bookingRoom }) => {
+    const rowsWithIndex = rooms.map((room, index) => ({
+        ...room,
         id: room.id,
         no: index + 1
-    })); 
+    }));
     const columns = useMemo(
         () => [
             { field: 'no', headerName: 'No.', width: 70 },
@@ -80,11 +81,16 @@ const RoomTable = ({ rooms, deleteRoom, editRoom }) => {
                         icon={<DeleteIcon sx={{ color: '#fe4066' }} />}
                         label="Delete"
                         onClick={deleteRoom(params.id, params.row.roomName)}
+                    />,
+                    <GridActionsCellItem
+                        icon={<AddHomeIcon sx={{ color: '#1976d2' }} />}
+                        label="Meeting room booking"
+                        onClick={bookingRoom(params.id, params.row.roomName)}
                     />
                 ],
             }
         ],
-        [deleteRoom, editRoom]
+        [deleteRoom, editRoom, bookingRoom]
     );
 
     return (

@@ -7,13 +7,11 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Notification from "../feedback/Notification";
 import { addMeetingRoom, updateMeetingRoom } from "../../services/meetingRoomService";
+import { DateTimeRangePicker } from '@mui/x-date-pickers-pro/DateTimeRangePicker';
+import dayjs from 'dayjs';
 
 const style = {
     position: 'absolute',
@@ -42,8 +40,8 @@ const initialRoom = {
     availableTime: "",
     notes: "",
 }
-
-const RoomForm = ({ title, open, handleClose, onRoomSaveSuccess, roomData }) => {
+const today = dayjs();
+const RoomForm = ({ title, open, handleClose, onSaveSuccess, roomData }) => {
     const [formData, setFormData] = useState(initialRoom)
     const [state, setState] = useState(initialState);
 
@@ -78,9 +76,9 @@ const RoomForm = ({ title, open, handleClose, onRoomSaveSuccess, roomData }) => 
         const roomJson = JSON.stringify(formData);
         const response = await addMeetingRoom(roomJson);
         if (response.statusCode === 201) {
-            handleClose();
-            if (onRoomSaveSuccess) {
-                onRoomSaveSuccess();
+            handleClose()
+            if (onSaveSuccess) {
+                onSaveSuccess();
                 setState({ ...initialState, open: true, message: "Meeting room added successfully" });
                 setFormData(initialRoom);
             }
@@ -97,9 +95,9 @@ const RoomForm = ({ title, open, handleClose, onRoomSaveSuccess, roomData }) => 
         const roomJson = JSON.stringify(data);
         const response = await updateMeetingRoom(roomData.id, roomJson);
         if (response.statusCode === 200) {
-            handleClose();
-            if (onRoomSaveSuccess) {
-                onRoomSaveSuccess();
+            handleClose()
+            if (onSaveSuccess) {
+                onSaveSuccess();
                 setState({ ...initialState, open: true, message: "Meeting room updated successfully" });
                 setFormData(initialRoom);
             }
@@ -155,6 +153,7 @@ const RoomForm = ({ title, open, handleClose, onRoomSaveSuccess, roomData }) => 
                                 name="roomName"
                                 value={formData.roomName}
                                 onChange={(e) => onChange(e)}
+                                aria-readonly
                             />
                             <TextField
                                 required
@@ -163,40 +162,7 @@ const RoomForm = ({ title, open, handleClose, onRoomSaveSuccess, roomData }) => 
                                 value={formData.capacity}
                                 onChange={(e) => onChange(e)}
                             />
-                            <FormControl>
-                                <InputLabel>Role</InputLabel>
-                                <Select
-                                    value={formData.status}
-                                    label="Status"
-                                    name="status"
-                                    onChange={(e) => onChange(e)}
-                                >
-                                    <MenuItem value={"Available"} >Available</MenuItem>
-                                    <MenuItem value={"Stopped"} >Stopped</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <TextField
-                                required
-                                label="RoomType"
-                                name="roomType"
-                                value={formData.roomType}
-                                onChange={(e) => onChange(e)}
-                            />
-                            <TextField
-                                required
-                                label="Available Time"
-                                name="availableTime"
-                                value={formData.availableTime}
-                                onChange={(e) => onChange(e)}
-                            />
-                            <TextField
-                                required
-                                label="Notes"
-                                name="notes"
-                                value={formData.notes}
-                                onChange={(e) => onChange(e)}
-                            />
-
+                            <DateTimeRangePicker defaultValue={[today, today]} disablePast />
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '20px' }}>
                                 <Button variant="outlined" sx={{ marginTop: '20px' }} onClick={handleClose}>Cancel</Button>
                                 <Button variant="contained" sx={{ marginTop: '20px' }} onClick={handleSave}>Save</Button>

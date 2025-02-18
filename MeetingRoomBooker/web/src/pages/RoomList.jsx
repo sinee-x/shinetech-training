@@ -19,10 +19,10 @@ const initialState = {
 const MeetingRoom = () => {
   const [rooms, setRooms] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState('Add Room');
-  const [roomData, setRoomData] = useState({});
-  const [state, setState] = useState(initialState);
+  const [roomFormOpen, setRoomFormOpen] = useState(false);
+  const [roomFormTitle, setRoomFormTitle] = useState('Add Room');
+  const [roomFromData, setRoomFromData] = useState({});
+  const [notificationState, setNotificationState] = useState(initialState);
   const confirm = useConfirm();
 
   const fetchRooms = async () => {
@@ -68,16 +68,16 @@ const MeetingRoom = () => {
   }, [searchTerm, rooms]);
 
   const handleAddRoom = () => {
-    setOpen(true);
-    setTitle('Add Room');
-    setRoomData(null);
+    setRoomFormOpen(true);
+    setRoomFormTitle('Add Room');
+    setRoomFromData(null);
   };
 
   const handleEditRoom = useCallback(
     (id, room) => () => {
-      setOpen(true);
-      setTitle('Edit Room');
-      setRoomData(room);
+      setRoomFormOpen(true);
+      setRoomFormTitle('Edit Room');
+      setRoomFromData(room);
     },
     []
   );
@@ -91,7 +91,7 @@ const MeetingRoom = () => {
 
       if (confirmed) {
         deleteMeetingRoom(id).then(() => {
-          setState({ ...initialState, open: true, message: "Meeting room deleted successfully" });
+          setNotificationState({ ...initialState, open: true, message: "Meeting room deleted successfully" });
           fetchRooms();
         });
       } else {
@@ -101,19 +101,26 @@ const MeetingRoom = () => {
     [confirm]
   );
 
-  const handleModalClose = () => {
-    setOpen(false);
+  const handleBookingRoom = useCallback(
+    (id, roomName) => async () => {
+      console.log("Booking room with ID:", id, "and name:", roomName);
+    },
+    []
+  );
+
+  const handleRoomFormModalClose = () => {
+    setRoomFormOpen(false);
   }
 
   const handleNotificationClose = () => {
-    setState({ ...state, open: false });
+    setNotificationState({ ...notificationState, open: false });
   };
 
-  const onSaveSuccess = () => {
+  const onRoomSaveSuccess = () => {
     fetchRooms();
   }
 
-  const handleOnChange = (e) => {
+  const handleSearchBarOnChange = (e) => {
     setSearchTerm(e.target.value);
 
   }
@@ -122,7 +129,7 @@ const MeetingRoom = () => {
     <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, height: '50px' }}>
         <Box>
-          <SearchBar onChange={handleOnChange} />
+          <SearchBar onChange={handleSearchBarOnChange} />
         </Box>
         <Box>
           <AddButton onClick={handleAddRoom} />
@@ -132,16 +139,17 @@ const MeetingRoom = () => {
         rooms={filteredUsers}
         deleteRoom={handleDeleteRoom}
         editRoom={handleEditRoom}
+        bookingRoom={handleBookingRoom}
       />
 
       <RoomForm
-        open={open}
-        handleClose={handleModalClose}
-        title={title}
-        roomData={roomData}
-        onSaveSuccess={onSaveSuccess}
+        open={roomFormOpen}
+        handleClose={handleRoomFormModalClose}
+        title={roomFormTitle}
+        roomData={roomFromData}
+        onSaveSuccess={onRoomSaveSuccess}
       />
-      <Notification state={state} handleClose={handleNotificationClose} />
+      <Notification state={notificationState} handleClose={handleNotificationClose} />
     </>
   );
 }
