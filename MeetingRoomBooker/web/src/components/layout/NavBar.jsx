@@ -9,7 +9,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import BallotIcon from '@mui/icons-material/Ballot';
 import AccountIcon from '@mui/icons-material/AccountCircle';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import AddHomeIcon from '@mui/icons-material/AddHome';
@@ -117,9 +116,8 @@ const NavBar = ({ setDrawerOpen }) => {
 
     const userOptions = [
         { label: "Home", path: "/", icon: <HomeIcon /> },
-        { label: "User", path: "/user", icon: <AccountIcon /> },
-        { label: "Bookings", path: "/booking-list", icon: <BallotIcon /> },
-        { label: "RoomBooking", path: "/booking", icon: <AddHomeIcon /> },
+        { label: "Users", path: "/user", icon: <AccountIcon /> },
+        { label: "Bookings", path: "/booking", icon: <AddHomeIcon /> },
         { label: "Rooms", path: "/room-list", icon: <MeetingRoomIcon /> }
     ];
 

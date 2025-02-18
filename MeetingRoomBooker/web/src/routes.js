@@ -4,7 +4,6 @@ import Login from "./pages/auth/Login";
 import Booking from "./pages/Booking";
 import RoomList from "./pages/RoomList";
 import AuthGuard from "./components/AuthGuard";
-import BookingList from "./pages/BookingList";
 import User from "./pages/User";
 import Home from "./pages/Home";
 
@@ -33,10 +32,6 @@ const routes = [
             {
                 path: "room-list",
                 element: <RoomList />,
-            },
-            {
-                path: "booking-list",
-                element: <BookingList />,
             }
         ]
     },
