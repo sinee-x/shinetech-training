@@ -8,6 +8,7 @@ import RoomTable from "../components/meetingroom/RoomTable";
 import RoomForm from "../components/meetingroom/RoomForm";
 import SearchBar from "../components/SearchBar";
 import AddButton from "../components/AddButton";
+import BookingForm from "../components/booking/BookingForm";
 
 const initialState = {
   open: false,
@@ -24,6 +25,8 @@ const MeetingRoom = () => {
   const [roomFromData, setRoomFromData] = useState({});
   const [notificationState, setNotificationState] = useState(initialState);
   const confirm = useConfirm();
+  const [bookingFormOpen, setBookingFormOpen] = useState(false);
+
 
   const fetchRooms = async () => {
     try {
@@ -102,15 +105,12 @@ const MeetingRoom = () => {
   );
 
   const handleBookingRoom = useCallback(
-    (id, roomName) => async () => {
-      console.log("Booking room with ID:", id, "and name:", roomName);
+    (id, room) => async () => {
+      setBookingFormOpen(true);
+      setRoomFromData(room);
     },
     []
   );
-
-  const handleRoomFormModalClose = () => {
-    setRoomFormOpen(false);
-  }
 
   const handleNotificationClose = () => {
     setNotificationState({ ...notificationState, open: false });
@@ -144,11 +144,18 @@ const MeetingRoom = () => {
 
       <RoomForm
         open={roomFormOpen}
-        handleClose={handleRoomFormModalClose}
+        handleClose={() => setRoomFormOpen(false)}
         title={roomFormTitle}
         roomData={roomFromData}
         onSaveSuccess={onRoomSaveSuccess}
       />
+
+      <BookingForm
+        open={bookingFormOpen}
+        handleClose={() => setBookingFormOpen(false)}
+        roomData={roomFromData}
+      />
+      
       <Notification state={notificationState} handleClose={handleNotificationClose} />
     </>
   );

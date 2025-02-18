@@ -85,7 +85,7 @@ const RoomTable = ({ rooms, deleteRoom, editRoom, bookingRoom }) => {
                     <GridActionsCellItem
                         icon={<AddHomeIcon sx={{ color: '#1976d2' }} />}
                         label="Meeting room booking"
-                        onClick={bookingRoom(params.id, params.row.roomName)}
+                        onClick={bookingRoom(params.id, params.row)}
                     />
                 ],
             }

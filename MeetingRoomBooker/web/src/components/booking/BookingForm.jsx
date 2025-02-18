@@ -10,7 +10,13 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Notification from "../feedback/Notification";
 import { addMeetingRoom, updateMeetingRoom } from "../../services/meetingRoomService";
-import { DateTimeRangePicker } from '@mui/x-date-pickers-pro/DateTimeRangePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
 import dayjs from 'dayjs';
 
 const style = {
@@ -40,8 +46,7 @@ const initialRoom = {
     availableTime: "",
     notes: "",
 }
-const today = dayjs();
-const RoomForm = ({ title, open, handleClose, onSaveSuccess, roomData }) => {
+const RoomForm = ({ open, handleClose, onSaveSuccess, roomData }) => {
     const [formData, setFormData] = useState(initialRoom)
     const [state, setState] = useState(initialState);
 
@@ -133,7 +138,7 @@ const RoomForm = ({ title, open, handleClose, onSaveSuccess, roomData }) => {
                                 fontSize: '18px',
                                 top: '15px'
                             }}
-                        >{title}</Typography>
+                        >{'Booking Meeting Room'}</Typography>
                         <IconButton
                             aria-label="close"
                             onClick={handleClose}
@@ -148,21 +153,40 @@ const RoomForm = ({ title, open, handleClose, onSaveSuccess, roomData }) => {
                         </IconButton>
                         <Box component='form' sx={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '30px' }} autoComplete="off">
                             <TextField
-                                required
                                 label="RoomName"
                                 name="roomName"
                                 value={formData.roomName}
                                 onChange={(e) => onChange(e)}
-                                aria-readonly
+                                disabled={true}
                             />
                             <TextField
-                                required
                                 label="Capacity"
                                 name="capacity"
                                 value={formData.capacity}
                                 onChange={(e) => onChange(e)}
+                                disabled={true}
                             />
-                            <DateTimeRangePicker defaultValue={[today, today]} disablePast />
+
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="outlined-adornment-amount">Duration of Meeting</InputLabel>
+                                <OutlinedInput
+                                    endAdornment={<InputAdornment position="end">minutes</InputAdornment>}
+                                    label="Duration of Meeting"
+                                    type="number"
+                                />
+                            </FormControl>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateTimePicker
+                                    label="Start Time"
+                                    value={formData.startTime}
+                                    onChange={(newValue) => {
+                                        setFormData({ ...formData, startTime: newValue });
+                                    }}
+                                    renderInput={(params) => <TextField {...params} />}
+                                    disablePast
+                                    defaultValue={dayjs()}
+                                />
+                            </LocalizationProvider>
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '20px' }}>
                                 <Button variant="outlined" sx={{ marginTop: '20px' }} onClick={handleClose}>Cancel</Button>
                                 <Button variant="contained" sx={{ marginTop: '20px' }} onClick={handleSave}>Save</Button>
