@@ -154,6 +154,7 @@ const MeetingRoom = () => {
         open={bookingFormOpen}
         handleClose={() => setBookingFormOpen(false)}
         roomData={roomFromData}
+        isNewBooking={true}
       />
       
       <Notification state={notificationState} handleClose={handleNotificationClose} />

@@ -80,6 +80,10 @@ namespace MeetingRoomBooker.Infrastructure.Data
                 .HasDefaultValue("InProgress");
 
             modelBuilder.Entity<Reservation>()
+                .Property(r => r.Subject)
+                .IsRequired();
+
+            modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)

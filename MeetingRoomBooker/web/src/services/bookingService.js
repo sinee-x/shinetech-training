@@ -2,7 +2,7 @@ import axiosInstance from "../utils/axios";
 
 export const getBookings = async () => {
   try {
-    const response = await axiosInstance.get("/booking");
+    const response = await axiosInstance.get("/reservation");
     return response.data.data;
   } catch (error) {
     console.error(error);
@@ -11,7 +11,7 @@ export const getBookings = async () => {
 
 export const getBooking = async (id) => {
   try {
-    const response = await axiosInstance.get(`/booking/${id}`);
+    const response = await axiosInstance.get(`/reservation/${id}`);
     return response.data.data;
   } catch (error) {
     console.error(error);
@@ -20,7 +20,7 @@ export const getBooking = async (id) => {
 
 export const addBooking = async (booking) => {
   try {
-    const response = await axiosInstance.post("/booking", booking, {
+    const response = await axiosInstance.post("/reservation", booking, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -33,7 +33,7 @@ export const addBooking = async (booking) => {
 
 export const updateBooking = async (id, booking) => {
   try {
-    const response = await axiosInstance.put(`/booking/${id}`, booking, {
+    const response = await axiosInstance.put(`/reservation/${id}`, booking, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -46,7 +46,7 @@ export const updateBooking = async (id, booking) => {
 
 export const deleteBooking = async (id) => {
   try {
-    const response = await axiosInstance.delete(`/booking/${id}`);
+    const response = await axiosInstance.delete(`/reservation/${id}`);
     return response.data;
   } catch (error) {
     return error.response;
@@ -55,7 +55,7 @@ export const deleteBooking = async (id) => {
 
 export const getBookingsByUserId = async (userId) => {
   try {
-    const response = await axiosInstance.get(`/booking/user/${userId}`);
+    const response = await axiosInstance.get(`/reservation/user/${userId}`);
     return response.data.data;
   } catch (error) {
     console.error(error);
@@ -64,7 +64,7 @@ export const getBookingsByUserId = async (userId) => {
 
 export const getBookingsByRoomId = async (roomId) => {
   try {
-    const response = await axiosInstance.get(`/booking/room/${roomId}`);
+    const response = await axiosInstance.get(`/reservation/room/${roomId}`);
     return response.data.data;
   } catch (error) {
     console.error(error);

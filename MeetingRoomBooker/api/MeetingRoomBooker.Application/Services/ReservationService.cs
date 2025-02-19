@@ -24,6 +24,7 @@ namespace MeetingRoomBooker.Application.Services
                 StartTime = request.StartTime,
                 EndTime = request.EndTime,
                 Status = request.Status,
+                Subject = request.Subject,
                 CreatedAt = DateTime.Now,
                 LastModifiedAt = DateTime.Now
             };
@@ -78,6 +79,8 @@ namespace MeetingRoomBooker.Application.Services
             reservation.RoomId = request.RoomId;
             reservation.StartTime = request.StartTime;
             reservation.EndTime = request.EndTime;
+            reservation.Status = request.Status;
+            reservation.Subject = request.Subject;
 
             reservation.SetModified(userId);
 
@@ -95,6 +98,7 @@ namespace MeetingRoomBooker.Application.Services
                 StartTime = reservation.StartTime,
                 EndTime = reservation.EndTime,
                 Status = reservation.Status,
+                Subject = reservation.Subject,
                 CreatedAt = reservation.CreatedAt,
                 LastModifiedAt = reservation.LastModifiedAt
             };

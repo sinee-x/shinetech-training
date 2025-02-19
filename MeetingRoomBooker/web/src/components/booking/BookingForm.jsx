@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Notification from "../feedback/Notification";
-import { addMeetingRoom, updateMeetingRoom } from "../../services/meetingRoomService";
+import { addBooking } from "../../services/bookingService";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -18,6 +18,8 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import dayjs from 'dayjs';
+import { useAuth } from "../../auth/AuthContext";
+
 
 const style = {
     position: 'absolute',
@@ -35,41 +37,76 @@ const initialState = {
     vertical: 'top',
     horizontal: 'center',
     severity: 'success',
-    message: 'Meeting room added successfully'
+    message: 'Meeting room booked successfully'
 }
 
-const initialRoom = {
+const initialBookingRoom = {
+    userId: "",
+    roomId: "",
     roomName: "",
-    capacity: 0,
-    status: "Available",
-    roomType: "",
-    availableTime: "",
-    notes: "",
+    capacity: "",
+    startTime: dayjs().add(2, 'hour').startOf('hour'),
+    endTime: null,
+    duration: 60,
+    status: "NotStart",
+    subject: ""
 }
-const RoomForm = ({ open, handleClose, onSaveSuccess, roomData }) => {
-    const [formData, setFormData] = useState(initialRoom)
+
+const today = dayjs().add(2, 'hour').startOf('hour');
+const RoomForm = ({ open, handleClose, roomData, isNewBooking }) => {
+    const [formData, setFormData] = useState(initialBookingRoom)
     const [state, setState] = useState(initialState);
+    const { user } = useAuth();
 
     useEffect(() => {
-        if (roomData) {
-            setFormData(roomData);
+        if (isNewBooking) {
+            const data = {
+                ...initialBookingRoom,
+                userId: user.id,
+                roomId: roomData.id,
+                roomName: roomData.roomName,
+                capacity: roomData.capacity,
+                startTime: today,
+                duration: 0,
+                endTime: today.add(0, 'minute'),
+                status: "NotStart",
+                subject: ""
+            }
+            setFormData(data);
         }
         else {
-            setFormData(initialRoom);
+            setFormData(initialBookingRoom);
         }
-    }, [roomData]);
+    }, [roomData, isNewBooking, user]);
 
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
+    const onChangeDuration = (e) => {
+        const value = Number(e.target.value);
+        console.log("e", value);
+
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            duration: value,
+            endTime: today.add(value, 'minute')
+        }));
+    }
+
+    const onChangeDataTime = (newValue) => {
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            startTime: newValue,
+            endTime: newValue.add(formData.duration, 'minute') // 使用当前 duration 更新 endTime  
+        }));
+
+        console.log("Updated formData", formData);
+    }
 
     const handleSave = async () => {
         try {
-            if (roomData) {
-                await handleEditRoom();
-            }
-            else {
-                await handleAddRoom();
+            if (isNewBooking) {
+                await handleAddBooking();
             }
         }
         catch (error) {
@@ -77,38 +114,18 @@ const RoomForm = ({ open, handleClose, onSaveSuccess, roomData }) => {
         }
     }
 
-    const handleAddRoom = async () => {
-        const roomJson = JSON.stringify(formData);
-        const response = await addMeetingRoom(roomJson);
+    const handleAddBooking = async () => {
+        const { duration, roomName, capacity, ...data } = formData;
+        const roomJson = JSON.stringify(data);
+        console.log("roomJson", roomJson);
+        const response = await addBooking(roomJson);
         if (response.statusCode === 201) {
             handleClose()
-            if (onSaveSuccess) {
-                onSaveSuccess();
-                setState({ ...initialState, open: true, message: "Meeting room added successfully" });
-                setFormData(initialRoom);
-            }
+            setState({ ...initialState, open: true, message: "Meeting room booked successfully" });
+            setFormData(initialBookingRoom);
             return;
         }
         console.log("Failed to add room", response.data.message);
-    }
-
-    const handleEditRoom = async () => {
-        const data = {
-            ...formData,
-            "id": roomData.id
-        }
-        const roomJson = JSON.stringify(data);
-        const response = await updateMeetingRoom(roomData.id, roomJson);
-        if (response.statusCode === 200) {
-            handleClose()
-            if (onSaveSuccess) {
-                onSaveSuccess();
-                setState({ ...initialState, open: true, message: "Meeting room updated successfully" });
-                setFormData(initialRoom);
-            }
-            return;
-        }
-        console.log("Failed to update room", response.data.message);
     }
 
     const handleNotificationClose = () => {
@@ -156,15 +173,20 @@ const RoomForm = ({ open, handleClose, onSaveSuccess, roomData }) => {
                                 label="RoomName"
                                 name="roomName"
                                 value={formData.roomName}
-                                onChange={(e) => onChange(e)}
                                 disabled={true}
                             />
                             <TextField
                                 label="Capacity"
                                 name="capacity"
                                 value={formData.capacity}
-                                onChange={(e) => onChange(e)}
                                 disabled={true}
+                            />
+
+                            <TextField
+                                label="Subject"
+                                name="subject"
+                                value={formData.subject}
+                                onChange={(e) => onChange(e)}
                             />
 
                             <FormControl fullWidth>
@@ -173,20 +195,20 @@ const RoomForm = ({ open, handleClose, onSaveSuccess, roomData }) => {
                                     endAdornment={<InputAdornment position="end">minutes</InputAdornment>}
                                     label="Duration of Meeting"
                                     type="number"
+                                    onChange={(e) => onChangeDuration(e)}
                                 />
                             </FormControl>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DateTimePicker
                                     label="Start Time"
                                     value={formData.startTime}
-                                    onChange={(newValue) => {
-                                        setFormData({ ...formData, startTime: newValue });
-                                    }}
-                                    renderInput={(params) => <TextField {...params} />}
+                                    onChange={onChangeDataTime}
+                                    defaultValue={today}
+                                    name="startTime"
                                     disablePast
-                                    defaultValue={dayjs()}
                                 />
                             </LocalizationProvider>
+
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '20px' }}>
                                 <Button variant="outlined" sx={{ marginTop: '20px' }} onClick={handleClose}>Cancel</Button>
                                 <Button variant="contained" sx={{ marginTop: '20px' }} onClick={handleSave}>Save</Button>

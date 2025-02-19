@@ -11,5 +11,6 @@ namespace MeetingRoomBooker.Domain.Entities
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public string Status { get; set; }
+        public string Subject { get; set; }
     }
 }
