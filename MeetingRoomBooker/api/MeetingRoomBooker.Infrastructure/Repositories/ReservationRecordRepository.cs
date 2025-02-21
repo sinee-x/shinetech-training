@@ -10,8 +10,10 @@ namespace MeetingRoomBooker.Infrastructure.Repositories
         public async Task<IEnumerable<ReservationRecord>> GetAllReservationsAsync()
         {
             const string sql = @"SELECT   
-                                    r.Id AS ReservationId,  
-                                    u.Username,  
+                                    r.Id,  
+                                    u.Id as UserId,
+                                    u.Username, 
+                                    mr.Id as RoomId,
                                     mr.RoomName,  
                                     r.StartTime,  
                                     r.EndTime,  
@@ -29,13 +31,15 @@ namespace MeetingRoomBooker.Infrastructure.Repositories
         public async Task<ReservationRecord?> GetReservationByIdAsync(int id)
         {
             const string sql = @"SELECT   
-                                    r.Id AS ReservationId,  
-                                    u.Username,  
+                                    r.Id,  
+                                    u.Id as UserId,
+                                    u.Username, 
+                                    mr.Id as RoomId,
                                     mr.RoomName,  
                                     r.StartTime,  
                                     r.EndTime,  
                                     r.Status,  
-                                    r.Subject  
+                                    r.Subject   
                                 FROM   
                                     Reservations r  
                                 JOIN   
@@ -48,13 +52,15 @@ namespace MeetingRoomBooker.Infrastructure.Repositories
         public async Task<IEnumerable<ReservationRecord>> GetReservationsByMeetingRoomIdAsync(int meetingRoomId)
         {
             const string sql = @"SELECT   
-                                    r.Id AS ReservationId,  
-                                    u.Username,  
+                                    r.Id,  
+                                    u.Id as UserId,
+                                    u.Username, 
+                                    mr.Id as RoomId,
                                     mr.RoomName,  
                                     r.StartTime,  
                                     r.EndTime,  
                                     r.Status,  
-                                    r.Subject  
+                                    r.Subject   
                                 FROM   
                                     Reservations r  
                                 JOIN   
@@ -67,13 +73,15 @@ namespace MeetingRoomBooker.Infrastructure.Repositories
         public async Task<IEnumerable<ReservationRecord>> GetReservationsByUserIdAsync(int userId)
         {
             const string sql = @"SELECT   
-                                    r.Id AS ReservationId,  
-                                    u.Username,  
+                                    r.Id,  
+                                    u.Id as UserId,
+                                    u.Username, 
+                                    mr.Id as RoomId,
                                     mr.RoomName,  
                                     r.StartTime,  
                                     r.EndTime,  
                                     r.Status,  
-                                    r.Subject  
+                                    r.Subject   
                                 FROM   
                                     Reservations r  
                                 JOIN   
