@@ -92,10 +92,10 @@ const RoomForm = ({ title, open, handleClose, onRoomSaveSuccess, roomData }) => 
     const handleEditRoom = async () => {
         const data = {
             ...formData,
-            "id": roomData.id
+            "id": roomData?.id
         }
         const roomJson = JSON.stringify(data);
-        const response = await updateMeetingRoom(roomData.id, roomJson);
+        const response = await updateMeetingRoom(roomData?.id, roomJson);
         if (response.statusCode === 200) {
             handleClose();
             if (onRoomSaveSuccess) {

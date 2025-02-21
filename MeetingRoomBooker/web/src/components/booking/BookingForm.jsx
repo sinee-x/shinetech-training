@@ -59,7 +59,7 @@ const RoomForm = ({ open, handleClose, roomData, isNewBooking }) => {
     const { user } = useAuth();
 
     useEffect(() => {
-        if (isNewBooking) {
+        if (isNewBooking && roomData) {
             const data = {
                 ...initialBookingRoom,
                 userId: user.id,

@@ -34,6 +34,7 @@ namespace MeetingRoomBooker.API.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IMeetingRoomRepository, MeetingRoomRepository>();
+            services.AddScoped<IReservationRecordRepository, ReservationRecordRepository>();
             services.AddScoped<DapperContext, DapperContext>();
 
             // Application Services

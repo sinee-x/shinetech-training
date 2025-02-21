@@ -1,10 +1,12 @@
-import React from 'react';
+import React from "react";
+import MeetingCalendar from "../components/booking/MeetingCalendar";
+
 
 const Booking = () => {
   return (
-    <div>
-      <h1>Booking</h1>
-    </div>
+    <>
+      <MeetingCalendar></MeetingCalendar>
+    </>
   );
 }
 

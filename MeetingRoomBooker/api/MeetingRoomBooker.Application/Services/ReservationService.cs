@@ -6,13 +6,13 @@ using MeetingRoomBooker.Domain.Repositories;
 
 namespace MeetingRoomBooker.Application.Services
 {
-    public class ReservationService(IReservationRepository reservationRepository) : IReservationService
+    public class ReservationService(IReservationRepository reservationRepository, IReservationRecordRepository reservationRecordRepository) : IReservationService
     {
         public async Task<ReservationDto> CreateReservationAsync(int userId, CreateReservationRequestDto request)
         {
-            var room = await reservationRepository.GetReservationsByMeetingRoomIdAsync(request.RoomId);
+            var rooms = await reservationRepository.GetReservationsByMeetingRoomIdAsync(request.RoomId);
 
-            if (room.Any(r => r.StartTime <= request.EndTime && r.EndTime >= request.StartTime))
+            if (rooms.Any(r => r.StartTime <= request.EndTime && r.EndTime >= request.StartTime))
             {
                 throw new Exception("Room is already booked for this time slot.");
             }
@@ -40,33 +40,33 @@ namespace MeetingRoomBooker.Application.Services
             await reservationRepository.DeleteReservationAsync(id);
         }
 
-        public async Task<IEnumerable<ReservationDto>> GetAllReservationsAsync()
+        public async Task<IEnumerable<ReservationRecordDto>> GetAllReservationsAsync()
         {
-            var reservations = await reservationRepository.GetAllReservationsAsync();
-            return reservations.Select(MapToDto);
+            var reservations = await reservationRecordRepository.GetAllReservationsAsync();
+            return reservations.Select(MapToReservationRecordDto);
         }
 
-        public async Task<ReservationDto?> GetReservationByIdAsync(int id)
+        public async Task<ReservationRecordDto?> GetReservationByIdAsync(int id)
         {
-            var reservation = await reservationRepository.GetReservationByIdAsync(id);
-            return reservation != null ? MapToDto(reservation) : null;
+            var reservation = await reservationRecordRepository.GetReservationByIdAsync(id);
+            return reservation != null ? MapToReservationRecordDto(reservation) : null;
         }
 
-        public async Task<IEnumerable<ReservationDto>> GetReservationsByMeetingRoomIdAsync(int meetingRoomId)
+        public async Task<IEnumerable<ReservationRecordDto>> GetReservationsByMeetingRoomIdAsync(int meetingRoomId)
         {
-            var reservations = await reservationRepository.GetReservationsByMeetingRoomIdAsync(meetingRoomId);
-            return reservations.Select(MapToDto);
+            var reservations = await reservationRecordRepository.GetReservationsByMeetingRoomIdAsync(meetingRoomId);
+            return reservations.Select(MapToReservationRecordDto);
         }
 
-        public async Task<IEnumerable<ReservationDto>> GetReservationsByUserIdAsync(int userId)
+        public async Task<IEnumerable<ReservationRecordDto>> GetReservationsByUserIdAsync(int userId)
         {
-            var reservations = await reservationRepository.GetReservationsByUserIdAsync(userId);
-            return reservations.Select(MapToDto);
+            var reservations = await reservationRecordRepository.GetReservationsByUserIdAsync(userId);
+            return reservations.Select(MapToReservationRecordDto);
         }
 
         public async Task<ReservationDto> UpdateReservationAsync(int id, UpdateReservationRequestDto request, int userId)
         {
-            var room = await reservationRepository.GetReservationsByMeetingRoomIdAsync(request.RoomId);
+            var room = await reservationRecordRepository.GetReservationsByMeetingRoomIdAsync(request.RoomId);
 
             if (room.Any(r => r.StartTime <= request.EndTime && r.EndTime >= request.StartTime))
             {
@@ -105,5 +105,22 @@ namespace MeetingRoomBooker.Application.Services
 
         }
 
+        private ReservationRecordDto MapToReservationRecordDto(ReservationRecord reservation)
+        {
+            return new ReservationRecordDto
+            {
+                Id = reservation.Id,
+                UserId = reservation.UserId,
+                UserName = reservation.UserName,
+                RoomId = reservation.RoomId,
+                RoomName = reservation.RoomName,
+                StartTime = reservation.StartTime,
+                EndTime = reservation.EndTime,
+                Status = reservation.Status,
+                Subject = reservation.Subject,
+                CreatedAt = reservation.CreatedAt,
+                LastModifiedAt = reservation.LastModifiedAt
+            };
+        }
     }
 }

@@ -7,10 +7,10 @@ namespace MeetingRoomBooker.Application.Interfaces
     {
         Task<ReservationDto> CreateReservationAsync(int userId, CreateReservationRequestDto request);
         Task DeleteReservationAsync(int id);
-        Task<IEnumerable<ReservationDto>> GetAllReservationsAsync();
-        Task<ReservationDto?> GetReservationByIdAsync(int id);
-        Task<IEnumerable<ReservationDto>> GetReservationsByMeetingRoomIdAsync(int meetingRoomId);
-        Task<IEnumerable<ReservationDto>> GetReservationsByUserIdAsync(int userId);
+        Task<IEnumerable<ReservationRecordDto>> GetAllReservationsAsync();
+        Task<ReservationRecordDto?> GetReservationByIdAsync(int id);
+        Task<IEnumerable<ReservationRecordDto>> GetReservationsByMeetingRoomIdAsync(int meetingRoomId);
+        Task<IEnumerable<ReservationRecordDto>> GetReservationsByUserIdAsync(int userId);
         Task<ReservationDto> UpdateReservationAsync(int id, UpdateReservationRequestDto request, int userId);
     }
 }

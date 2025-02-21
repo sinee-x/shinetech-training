@@ -20,7 +20,7 @@ namespace MeetingRoomBooker.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<IEnumerable<ReservationDto>>>> Get()
+        public async Task<ActionResult<ApiResponse<IEnumerable<ReservationRecordDto>>>> Get()
         {
             try
             {
@@ -29,26 +29,26 @@ namespace MeetingRoomBooker.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequestResponse<IEnumerable<ReservationDto>>(ex.Message);
+                return BadRequestResponse<IEnumerable<ReservationRecordDto>>(ex.Message);
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ApiResponse<ReservationDto>>> Get(int id)
+        public async Task<ActionResult<ApiResponse<ReservationRecordDto>>> Get(int id)
         {
             try
             {
                 var reservation = await reservationService.GetReservationByIdAsync(id);
                 if (reservation == null)
                 {
-                    return NotFoundResponse<ReservationDto>($"Reservation with ID {id} not found.");
+                    return NotFoundResponse<ReservationRecordDto>($"Reservation with ID {id} not found.");
                 }
 
                 return OkResponse(reservation);
             }
             catch (Exception ex)
             {
-                return BadRequestResponse<ReservationDto>(ex.Message);
+                return BadRequestResponse<ReservationRecordDto>(ex.Message);
             }
         }
 
@@ -102,21 +102,21 @@ namespace MeetingRoomBooker.API.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<ApiResponse<IEnumerable<ReservationDto>>>> GetReservationsByUserId(int userId)
+        public async Task<ActionResult<ApiResponse<IEnumerable<ReservationRecordDto>>>> GetReservationsByUserId(int userId)
         {
             try
             {
                 var reservations = await reservationService.GetReservationsByUserIdAsync(userId);
-                return OkResponse<IEnumerable<ReservationDto>>(reservations);
+                return OkResponse<IEnumerable<ReservationRecordDto>>(reservations);
             }
             catch (Exception ex)
             {
-                return BadRequestResponse<IEnumerable<ReservationDto>>(ex.Message);
+                return BadRequestResponse<IEnumerable<ReservationRecordDto>>(ex.Message);
             }
         }
 
         [HttpGet("meeting-room/{meetingRoomId}")]
-        public async Task<ActionResult<ApiResponse<IEnumerable<ReservationDto>>>> GetReservationsByMeetingRoomId(int meetingRoomId)
+        public async Task<ActionResult<ApiResponse<IEnumerable<ReservationRecordDto>>>> GetReservationsByMeetingRoomId(int meetingRoomId)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace MeetingRoomBooker.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequestResponse<IEnumerable<ReservationDto>>(ex.Message);
+                return BadRequestResponse<IEnumerable<ReservationRecordDto>>(ex.Message);
             }
         }
     }
