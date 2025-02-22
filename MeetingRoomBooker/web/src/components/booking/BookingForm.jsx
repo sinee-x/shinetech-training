@@ -181,23 +181,12 @@ const RoomForm = ({ open, handleClose, roomData, isNewBooking }) => {
                                 value={formData.capacity}
                                 disabled={true}
                             />
-
                             <TextField
                                 label="Subject"
                                 name="subject"
                                 value={formData.subject}
                                 onChange={(e) => onChange(e)}
                             />
-
-                            <FormControl fullWidth>
-                                <InputLabel htmlFor="outlined-adornment-amount">Duration of Meeting</InputLabel>
-                                <OutlinedInput
-                                    endAdornment={<InputAdornment position="end">minutes</InputAdornment>}
-                                    label="Duration of Meeting"
-                                    type="number"
-                                    onChange={(e) => onChangeDuration(e)}
-                                />
-                            </FormControl>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DateTimePicker
                                     label="Start Time"
@@ -208,7 +197,15 @@ const RoomForm = ({ open, handleClose, roomData, isNewBooking }) => {
                                     disablePast
                                 />
                             </LocalizationProvider>
-
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="outlined-adornment-amount">Duration of Meeting</InputLabel>
+                                <OutlinedInput
+                                    endAdornment={<InputAdornment position="end">minutes</InputAdornment>}
+                                    label="Duration of Meeting"
+                                    type="number"
+                                    onChange={(e) => onChangeDuration(e)}
+                                />
+                            </FormControl>
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '20px' }}>
                                 <Button variant="outlined" sx={{ marginTop: '20px' }} onClick={handleClose}>Cancel</Button>
                                 <Button variant="contained" sx={{ marginTop: '20px' }} onClick={handleSave}>Save</Button>
