@@ -75,17 +75,17 @@ const RoomTable = ({ rooms, deleteRoom, editRoom, bookingRoom }) => {
                     <GridActionsCellItem
                         icon={<EditIcon sx={{ color: '#009dff' }} />}
                         label="Edit"
-                        onClick={editRoom(params.id, params.row)}
+                        onClick={() => { editRoom(params.row) }}
                     />,
                     <GridActionsCellItem
                         icon={<DeleteIcon sx={{ color: '#fe4066' }} />}
                         label="Delete"
-                        onClick={deleteRoom(params.id, params.row.roomName)}
+                        onClick={() => { deleteRoom(params.id, params.row.roomName) }}
                     />,
                     <GridActionsCellItem
                         icon={<AddHomeIcon sx={{ color: '#1976d2' }} />}
                         label="Meeting room booking"
-                        onClick={bookingRoom(params.id, params.row)}
+                        onClick={() => { bookingRoom( params.row) }}
                     />
                 ],
             }

@@ -7,11 +7,11 @@ import { Box, Paper } from "@mui/material";
 const paginationModel = { page: 0, pageSize: 10 };
 
 const UserTable = ({ users, deleteUser, editUser }) => {
-    const rowsWithIndex = users.map((user, index) => ({  
-        ...user,  
+    const rowsWithIndex = users.map((user, index) => ({
+        ...user,
         id: user.id,
         no: index + 1
-    })); 
+    }));
     const columns = useMemo(
         () => [
             { field: 'no', headerName: 'No.', width: 70 },
@@ -57,12 +57,12 @@ const UserTable = ({ users, deleteUser, editUser }) => {
                     <GridActionsCellItem
                         icon={<EditIcon sx={{ color: '#009dff' }} />}
                         label="Edit"
-                        onClick={editUser(params.id, params.row)}
+                        onClick={() => editUser(params.row)}
                     />,
                     <GridActionsCellItem
                         icon={<DeleteIcon sx={{ color: '#fe4066' }} />}
                         label="Delete"
-                        onClick={deleteUser(params.id, params.row.email)}
+                        onClick={() => deleteUser(params.id, params.row.email)}
                     />
                 ],
             }

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import { getUsers, deleteUser } from "../services/userService";
 import UserTable from "../components/user/UserTable";
@@ -28,20 +28,20 @@ const User = () => {
 
     const fetchUsers = async () => {
         try {
-            getUsers().then((data) => {
-                const users = data.map((user) => (
-                    {
-                        id: user.id,
-                        email: user.email,
-                        username: user.username,
-                        role: user.role === 0 ? 'Admin' : 'User',
-                        createdAt: user.createdAt,
-                        lastModifiedAt: user.lastModifiedAt,
-                    }
-                ));
-                setUsers(users);
-            });
-        } catch (error) {
+            const data = await getUsers();
+            const formattedUsers = data.map((user) => (
+                {
+                    id: user.id,
+                    email: user.email,
+                    username: user.username,
+                    role: user.role === 0 ? 'Admin' : 'User',
+                    createdAt: user.createdAt,
+                    lastModifiedAt: user.lastModifiedAt,
+                }
+            ));
+            setUsers(formattedUsers);
+        }
+        catch (error) {
             console.error("Error fetching users:", error);
         }
     };
@@ -51,42 +51,30 @@ const User = () => {
     }, []);
 
     const filteredUsers = useMemo(() => {
-        return users.filter(user => {
-            return user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-                || user.username?.toLowerCase().includes(searchTerm.toLowerCase())
-                || user.role?.toLowerCase().includes(searchTerm.toLowerCase())
-                || user.createdAt?.includes(searchTerm)
-                || user.lastModifiedAt?.includes(searchTerm);
-        });
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return users.filter(user => [user.email, user.username, user.role, user.createdAt, user.lastModifiedAt].some(field => field?.toLowerCase().includes(lowerSearchTerm)));
     }, [searchTerm, users]);
 
-    const handleDeleteUser = useCallback(
-        (id, email) => async () => {
-            const { confirmed, reason } = await confirm({
-                title: "Are you sure?",
-                description: "This action will delete the user permanently: " + email,
-            });
+    const handleDeleteUser = async (id, email) => {
+        const { confirmed, reason } = await confirm({
+            title: "Are you sure?",
+            description: "This action will delete the user permanently: " + email,
+        });
 
-            if (confirmed) {
-                deleteUser(id).then(() => {
-                    setState({ ...initialState, open: true, message: "User deleted successfully" });
-                    fetchUsers();
-                });
-            } else {
-                console.log("Deletion cancelled. Reason:", reason);
-            }
-        },
-        [confirm],
-    );
+        if (confirmed) {
+            await deleteUser(id);
+            setState({ ...initialState, open: true, message: "User deleted successfully" });
+            fetchUsers();
+        } else {
+            console.log("Deletion cancelled. Reason:", reason);
+        }
+    };
 
-    const handleEditUser = useCallback(
-        (id, row) => () => {
-            setOpen(true);
-            setTitle('Edit User');
-            setUserData(row);
-        },
-        [],
-    );
+    const handleEditUser = (row) => {
+        setOpen(true);
+        setTitle('Edit User');
+        setUserData(row);
+    };
 
     const handleOnChange = (e) => {
         setSearchTerm(e.target.value);

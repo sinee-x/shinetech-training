@@ -40,7 +40,7 @@ const initialUser = {
     username: "",
     role: 1
 }
-
+const DEFAULT_PASSWORD = "123456"; 
 const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
     const [formData, setFormData] = useState(initialUser)
     const [state, setState] = useState(initialState);
@@ -76,7 +76,7 @@ const UserForm = ({ title, open, handleClose, onSaveSuccess, user }) => {
     const handleAddUser = async () => {
         const data = {
             ...formData,
-            "password": "123456"
+            "password": DEFAULT_PASSWORD
         }
         const userJson = JSON.stringify(data);
         const response = await addUser(userJson);

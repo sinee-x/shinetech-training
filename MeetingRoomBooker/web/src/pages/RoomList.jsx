@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Box } from "@mui/material";
 import { getMeetingRooms, deleteMeetingRoom } from "../services/meetingRoomService";
 import { useConfirm } from "material-ui-confirm"
@@ -27,30 +27,26 @@ const MeetingRoom = () => {
   const confirm = useConfirm();
   const [bookingFormOpen, setBookingFormOpen] = useState(false);
 
-
   const fetchRooms = async () => {
     try {
-      await getMeetingRooms().then((res) => {
-        console.log(res);
-        const rooms = res.data.map((room) => {
-          return {
-            id: room.id,
-            roomName: room.roomName,
-            capacity: room.capacity,
-            status: room.status,
-            roomType: room.roomType,
-            availableTime: room.availableTime,
-            notes: room.notes,
-            createdAt: room.createdAt,
-            lastModifiedAt: room.lastModifiedAt,
-          }
-        });
-        setRooms(rooms);
+      const res = await getMeetingRooms();
+      const rooms = res.data.map((room) => {
+        return {
+          id: room.id,
+          roomName: room.roomName,
+          capacity: room.capacity,
+          status: room.status,
+          roomType: room.roomType,
+          availableTime: room.availableTime,
+          notes: room.notes,
+          createdAt: room.createdAt,
+          lastModifiedAt: room.lastModifiedAt,
+        }
       });
+      setRooms(rooms);
     } catch (error) {
       console.log("Error fetching meeting rooms", error);
     }
-
   }
 
   useEffect(() => {
@@ -58,16 +54,8 @@ const MeetingRoom = () => {
   }, []);
 
   const filteredUsers = useMemo(() => {
-    return rooms.filter(user => {
-      return user.roomName?.toLowerCase().includes(searchTerm.toLowerCase())
-        || user.capacity?.toString()?.toLowerCase().includes(searchTerm.toLowerCase())
-        || user.status?.toLowerCase().includes(searchTerm.toLowerCase())
-        || user.roomType?.toLowerCase().includes(searchTerm.toLowerCase())
-        || user.availableTime?.toLowerCase().includes(searchTerm.toLowerCase())
-        || user.notes?.toLowerCase().includes(searchTerm.toLowerCase())
-        || user.createdAt?.includes(searchTerm)
-        || user.lastModifiedAt?.includes(searchTerm);
-    });
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return rooms.filter(user => [user.roomName, user.capacity, user.status, user.roomType, user.availableTime, user.notes, user.createdAt, user.lastModifiedAt].some(field => field?.toString().toLowerCase().includes(lowerSearchTerm)));
   }, [searchTerm, rooms]);
 
   const handleAddRoom = () => {
@@ -76,41 +64,31 @@ const MeetingRoom = () => {
     setRoomFromData(null);
   };
 
-  const handleEditRoom = useCallback(
-    (id, room) => () => {
-      setRoomFormOpen(true);
-      setRoomFormTitle('Edit Room');
-      setRoomFromData(room);
-    },
-    []
-  );
+  const handleEditRoom = (room) => {
+    setRoomFormOpen(true);
+    setRoomFormTitle('Edit Room');
+    setRoomFromData(room);
+  }
 
-  const handleDeleteRoom = useCallback(
-    (id, roomName) => async () => {
-      const { confirmed, reason } = await confirm({
-        title: "Are you sure?",
-        description: "This action will delete the meeting room permanently: " + roomName,
-      });
+  const handleDeleteRoom = async (id, roomName) => {
+    const { confirmed, reason } = await confirm({
+      title: "Are you sure?",
+      description: "This action will delete the meeting room permanently: " + roomName,
+    });
 
-      if (confirmed) {
-        deleteMeetingRoom(id).then(() => {
-          setNotificationState({ ...initialState, open: true, message: "Meeting room deleted successfully" });
-          fetchRooms();
-        });
-      } else {
-        console.log("Deletion cancelled. Reason:", reason);
-      }
-    },
-    [confirm]
-  );
+    if (confirmed) {
+      await deleteMeetingRoom(id)
+      setNotificationState({ ...initialState, open: true, message: "Meeting room deleted successfully" });
+      fetchRooms();
+    } else {
+      console.log("Deletion cancelled. Reason:", reason);
+    }
+  };
 
-  const handleBookingRoom = useCallback(
-    (id, room) => async () => {
-      setBookingFormOpen(true);
-      setRoomFromData(room);
-    },
-    []
-  );
+  const handleBookingRoom = (room) => {
+    setBookingFormOpen(true);
+    setRoomFromData(room);
+  }
 
   const handleNotificationClose = () => {
     setNotificationState({ ...notificationState, open: false });
@@ -122,7 +100,6 @@ const MeetingRoom = () => {
 
   const handleSearchBarOnChange = (e) => {
     setSearchTerm(e.target.value);
-
   }
 
   return (
@@ -156,7 +133,7 @@ const MeetingRoom = () => {
         roomData={roomFromData}
         isNewBooking={true}
       />
-      
+
       <Notification state={notificationState} handleClose={handleNotificationClose} />
     </>
   );
