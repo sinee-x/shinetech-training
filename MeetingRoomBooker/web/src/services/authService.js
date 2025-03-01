@@ -2,6 +2,9 @@
 import axiosInstance from "../utils/axios";
 
 export const login = async (email, password) => {
+  if (process.env.USE_MOCK_API){
+    return {token: "mockToken"}
+  }
   try {
     const response = await axiosInstance.post("/auth/login", {
       email,
