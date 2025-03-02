@@ -84,7 +84,6 @@ const RoomForm = ({ open, handleClose, roomData, isNewBooking }) => {
     }
     const onChangeDuration = (e) => {
         const value = Number(e.target.value);
-        console.log("e", value);
 
         setFormData(prevFormData => ({
             ...prevFormData,
@@ -99,8 +98,6 @@ const RoomForm = ({ open, handleClose, roomData, isNewBooking }) => {
             startTime: newValue,
             endTime: newValue.add(formData.duration, 'minute') // 使用当前 duration 更新 endTime  
         }));
-
-        console.log("Updated formData", formData);
     }
 
     const handleSave = async () => {
@@ -117,7 +114,6 @@ const RoomForm = ({ open, handleClose, roomData, isNewBooking }) => {
     const handleAddBooking = async () => {
         const { duration, roomName, capacity, ...data } = formData;
         const roomJson = JSON.stringify(data);
-        console.log("roomJson", roomJson);
         const response = await addBooking(roomJson);
         if (response.statusCode === 201) {
             handleClose()

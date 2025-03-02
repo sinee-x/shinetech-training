@@ -12,7 +12,6 @@ import ListItemText from '@mui/material/ListItemText';
 import AccountIcon from '@mui/icons-material/AccountCircle';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import AddHomeIcon from '@mui/icons-material/AddHome';
-import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
@@ -115,13 +114,12 @@ const NavBar = ({ setDrawerOpen }) => {
     const { logout } = useAuth();
 
     const userOptions = [
-        { label: "Home", path: "/", icon: <HomeIcon /> },
-        { label: "Users", path: "/user", icon: <AccountIcon /> },
         { label: "Bookings", path: "/booking", icon: <AddHomeIcon /> },
-        { label: "Meeting Rooms", path: "/room-list", icon: <MeetingRoomIcon /> }
+        { label: "Meeting Rooms", path: "/room-list", icon: <MeetingRoomIcon /> },
+        { label: "Users", path: "/user", icon: <AccountIcon /> },
     ];
 
-    const settings = ['Profile', 'User', 'Dashboard', 'Logout'];
+    const settings = ['Profile', 'Logout'];
 
     const theme = useTheme();
     const [open, setOpen] = useState(true);

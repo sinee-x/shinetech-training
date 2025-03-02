@@ -17,7 +17,6 @@ const routes = [
         ),
         children: [
             {
-                index: true,
                 path: "/",
                 element: <Home />,
             },
@@ -26,6 +25,7 @@ const routes = [
                 element: <User />,
             },  
             {
+                index: true,
                 path: "booking",
                 element: <Booking />,
             },

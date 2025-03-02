@@ -39,6 +39,19 @@ export function AuthProvider({ children }) {
     };
 
     const setLoginUser = (accessToken) => {
+        if(process.env.REACT_APP_USE_MOCK_API === "true")
+        {
+            const user = {
+                id: "1",
+                email: "email",
+                username: "username",
+                role: "admin",
+            };
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("user", JSON.stringify(user));
+            setUser(user);
+            return user;
+        }
         const jwtPayload = decodeJwt(accessToken);
         const user = {
             id: jwtPayload.id,

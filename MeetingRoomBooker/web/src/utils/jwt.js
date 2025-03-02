@@ -2,6 +2,8 @@ import { jwtDecode } from "jwt-decode";
 import axios from "./axios";
 
 const isValidToken = (accessToken) => {
+    if(process.env.REACT_APP_USE_MOCK_API === "true") return true;
+        
     if (!accessToken) return false;
 
     const decoded = jwtDecode(accessToken);

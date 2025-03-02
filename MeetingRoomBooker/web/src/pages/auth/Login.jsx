@@ -70,6 +70,7 @@ export default function Login() {
     const [open, setOpen] = useState(false);
     const [error, setError] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+    const [email, setEmail] = useState(''); // 添加 email state
 
     useEffect(() => {
         if (user) {
@@ -77,7 +78,7 @@ export default function Login() {
         } else {
             const rememberedEmail = localStorage.getItem('rememberedEmail');
             if (rememberedEmail) {
-                document.getElementById('email').value = rememberedEmail;
+                setEmail(rememberedEmail); // 使用 setState 设置 email 值
                 setRememberMe(true);
             }
         }
@@ -187,7 +188,11 @@ export default function Login() {
                                 fullWidth
                                 variant="outlined"
                                 color={emailError ? 'error' : 'primary'}
-                                onChange={() => handleOnChange()}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    handleOnChange();
+                                }}
+                                value={email}
                             />
                         </FormControl>
                         <FormControl>
