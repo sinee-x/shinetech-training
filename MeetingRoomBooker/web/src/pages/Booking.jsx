@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
-import MeetingCalendar from "../components/booking/MeetingCalendar";
-import { useState } from 'react'
-import { getBookingsByUserId } from '../services/bookingService';
-import { useAuth } from '../auth/AuthContext';
 import dayjs from 'dayjs';
+import { useEffect, useState } from "react";
+import { useAuth } from '../auth/AuthContext';
+import MeetingCalendar from "../components/booking/MeetingCalendar";
+import { getBookingsByUserId } from '../services/bookingService';
 const Booking = () => {
   const [events, setEvents] = useState([]);
   const { user } = useAuth();

@@ -1,24 +1,21 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { Fade, Modal } from "@mui/material";
-import { Backdrop } from "@mui/material";
-import { Box } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
+import { Backdrop, Box, Fade, Modal } from "@mui/material";
 import Button from "@mui/material/Button";
-import Notification from "../feedback/Notification";
-import { addBooking } from "../../services/bookingService";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import FormControl from '@mui/material/FormControl';
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
+import { useEffect, useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
+import { addBooking } from "../../services/bookingService";
+import Notification from "../feedback/Notification";
 
 
 const style = {

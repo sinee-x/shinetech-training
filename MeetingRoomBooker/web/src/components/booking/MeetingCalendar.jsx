@@ -1,10 +1,10 @@
-import { useCalendarApp, ScheduleXCalendar } from '@schedule-x/react'
 import {
     createViewDay,
     createViewMonthAgenda,
     createViewMonthGrid,
     createViewWeek,
 } from '@schedule-x/calendar'
+import { ScheduleXCalendar, useCalendarApp } from '@schedule-x/react'
 import '@schedule-x/theme-default/dist/index.css'
 import React from 'react'
 

@@ -1,12 +1,12 @@
-import { useMemo, useState, useEffect } from "react";
 import { Box } from "@mui/material";
-import { getUsers, deleteUser } from "../services/userService";
-import UserTable from "../components/user/UserTable";
-import SearchBar from "../components/SearchBar";
+import { useConfirm } from "material-ui-confirm";
+import { useEffect, useMemo, useState } from "react";
 import AddButton from "../components/AddButton";
-import UserForm from "../components/user/UserForm";
-import { useConfirm } from "material-ui-confirm"
 import Notification from "../components/feedback/Notification";
+import SearchBar from "../components/SearchBar";
+import UserForm from "../components/user/UserForm";
+import UserTable from "../components/user/UserTable";
+import { deleteUser, getUsers } from "../services/userService";
 
 const initialState = {
     open: false,
