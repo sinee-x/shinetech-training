@@ -1,4 +1,4 @@
-﻿using MeetingRoomBooker.Application.Common.Models; // 确保引用 ApiResponse  
+﻿using MeetingRoomBooker.Application.Common.Models;
 using MeetingRoomBooker.Application.DTOs;
 using MeetingRoomBooker.Application.DTOs.Requests;
 using MeetingRoomBooker.Application.Interfaces;
